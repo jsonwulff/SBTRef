@@ -1,0 +1,23 @@
+{
+  "name": "sbt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cpebble/SST-2022.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cpebble/SST-2022/issues"
+  },
+  "homepage": "https://github.com/cpebble/SST-2022#readme",
+  "dependencies": {
+    "solc": "^0.8.16",
+    "web3": "^1.7.5"
+  }
+}
