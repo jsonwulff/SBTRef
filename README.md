@@ -1,5 +1,7 @@
 # SST-2022
 
+Most of this setup was created using [this tutorial](https://www.ludu.co/course/ethereum/truffle).
+
 ## Folder & file structure
 
 - `contracts`: Contains the app's Solidity contracts (.sol files).
