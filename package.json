@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run artifacts && npm run start --prefix client",
+    "artifacts": "cp -r ./build/contracts/ ./client/src/web3/artifacts/",
+    "deploy-contracts": "truffle migrate",
+    "test": "truffle test"
   },
   "repository": {
     "type": "git",
