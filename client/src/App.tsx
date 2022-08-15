@@ -1,22 +1,51 @@
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import { Container } from '@mui/system';
-import { useEffect } from 'react';
-import HelloWorld from "./web3/artifacts/HelloWorld.json"
-import { eth } from './web3/provider';
+import { useEffect, useState } from 'react';
+import { AbiItem } from 'web3-utils';
+import HelloWorld from './web3/artifacts/HelloWorld.json';
+import { eth, getContractInstance } from './web3/provider';
 
+const helloWorldContract = getContractInstance(HelloWorld.abi as AbiItem[]);
 
 export const App = () => {
-  // const contractAddress = "0xC0FB74a1C43a4Fd02167B93c9E54fF62BAedDE7E"
-  // const contract = Web3.
-  console.log(eth)
+  const [name, setName] = useState('');
+
   useEffect(() => {
-      eth.getAccounts().then((accounts) => console.log(accounts)); 
-  }, [])
+    helloWorldContract.methods
+      .getMyName()
+      .call()
+      .then((result: string) => {
+        setName(result);
+      });
+  }, []);
 
-  console.log(HelloWorld)
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
 
-  
+  const handleOnClick = async () => {
+    const adresseses = await eth.getAccounts();
+    helloWorldContract.methods
+      .changeMyName(name)
+      .send({ from: adresseses[0] })
+      .then((receipt: any) => {
+        console.log(receipt);
+      });
+  };
 
   return (
-    <Container>Test</Container>
+    <Container>
+      <Grid container direction="column">
+        <Grid item>
+          <Typography>My name is {name}</Typography>
+        </Grid>
+        <Grid item>
+          <TextField value={name} onChange={handleChange} />
+        </Grid>
+        <Grid item>
+          <Button onClick={handleOnClick}>Change name</Button>
+        </Grid>
+      </Grid>
+    </Container>
   );
-}
+};
