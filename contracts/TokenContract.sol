@@ -27,7 +27,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     }
     mapping(uint256 => Statblok) public _stats;
 
-    constructor() ERC721("cs1Token", "Meeee") {}
+    constructor() ERC721("NFTC Token", "NFTC") {}
 
     function _baseURI() internal pure override returns (string memory) {
         return "cshare.dk/nft/";

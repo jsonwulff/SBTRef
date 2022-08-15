@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/cpebble/SST-2022#readme",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
     "solc": "^0.8.16",
     "web3": "^1.7.5"
   }
