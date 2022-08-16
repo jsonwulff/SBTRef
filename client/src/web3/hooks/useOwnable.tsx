@@ -1,8 +1,8 @@
-import { cardContract } from '../provider';
+import { tokContract } from '../provider';
 
 export const useOwnable = () => {
   const getOwner = async (account: string) => {
-    const owner = await cardContract.methods.owner().call({ from: account });
+    const owner = await tokContract.methods.owner().call({ from: account });
     return owner;
   };
 

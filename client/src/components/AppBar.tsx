@@ -2,6 +2,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar as MuiAppBar,
+  Box,
   IconButton,
   Menu,
   MenuItem,
@@ -9,14 +10,11 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { useAppSelector } from '../redux/store';
 
 export default function AppBar() {
-  const [auth, setAuth] = useState(true);
+  const account = useAppSelector((state) => state.app.account);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -28,7 +26,7 @@ export default function AppBar() {
 
   return (
     <MuiAppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton
           size="large"
           edge="start"
@@ -38,41 +36,37 @@ export default function AppBar() {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Photos
-        </Typography>
-        {auth && (
-          <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-            </Menu>
-          </div>
-        )}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography>{account}</Typography>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>My account</MenuItem>
+          </Menu>
+        </Box>
       </Toolbar>
     </MuiAppBar>
   );
