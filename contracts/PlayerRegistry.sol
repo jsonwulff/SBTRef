@@ -20,6 +20,22 @@ contract TCGReg is Ownable {
         token_addr = token;
     }
 
+    modifier isRegistered(address who) {
+        require (_playerInfo[who].playerLevel != 0, "Player isn't registered");
+        _;
+    }
+    
+    function register() public {
+        address who = msg.sender;
+        require(_playerInfo[who].playerLevel == 0, "Player is already registered");
+        _playerInfo[who].playerLevel = 0;
+        _playerInfo[who].reputation = 50;
+    }
+
+    function getPlayerLevel(address who) public isRegistered(who) view returns(uint256){
+        return _playerInfo[who].playerLevel;
+    }
+
     function changeTokenAddr(address token) public onlyOwner{
         token_addr = token;
     }
