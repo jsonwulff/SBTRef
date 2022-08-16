@@ -1,34 +1,35 @@
 import { Button, Grid, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import { useState } from 'react';
-import { AbiItem } from 'web3-utils';
-import CardFactory from './web3/artifacts/CardFactory.json';
 import { useAccount } from './web3/hooks/useAccount';
-import { getContractInstance } from './web3/provider';
-// import Web3 from 'web3';
+import { useOwnable } from './web3/hooks/useOwnable';
 
 // const helloWorldContract = getContractInstance(HelloWorld.abi as AbiItem[]);
 
 export const App = () => {
   const [name, setName] = useState();
-  const [account] = useAccount();
-
-  const cardContract = getContractInstance(CardFactory.abi as AbiItem[]);
+  useAccount();
+  const [getOwner] = useOwnable();
 
   const hancleOnClick = () => {
-    if (account !== '') {
-      cardContract.methods
-        .createRandomCard('julian')
-        .send({ from: account })
-        .on('receipt', function (receipt: any) {
-          console.log('card created');
-        })
-        .on('error', function (error: any) {
-          console.log('error:', error);
-        });
-    } else {
-      console.log('no account conneted');
-    }
+    // getOwner(account);
+    // if (account !== '') {
+    //   cardContract.methods
+    //     .createRandomCard('julian')
+    //     .send({ from: account })
+    //     .on('receipt', function (receipt: any) {
+    //       console.log('card created');
+    //     })
+    //     .on('error', function (error: any, receipt: any) {
+    //       console.log('after handle revert:', receipt);
+    //       const message = error.message;
+    //       const slicedMessage = message.slice(49, error.message.length - 1);
+    //       const errorMessageInJson = JSON.parse(slicedMessage);
+    //       console.log(errorMessageInJson.value.data.message);
+    //     });
+    // } else {
+    //   console.log('no account connected');
+    // }
   };
 
   // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

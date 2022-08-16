@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAccount } from '../../redux/appSlice';
+import { RootState } from '../../redux/store';
 import { eth } from '../provider';
 
 export const useAccount = () => {
-  const [account, setAccount] = useState<string>('');
+  const account = useSelector((state: RootState) => state.app.account);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     eth.requestAccounts().then((result) => {
-      setAccount(result[0]);
+      console.log('from useeffect');
+      dispatch(setAccount(result[0]));
     });
   }, []);
 
@@ -15,11 +20,10 @@ export const useAccount = () => {
     if (currentAccount.length === 0) {
       console.log('Please connect to MetaMask');
     } else if (currentAccount[0] !== account) {
-      setAccount(currentAccount[0]);
+      console.log('from listener');
+      dispatch(setAccount(currentAccount[0]));
     }
   };
 
   window.ethereum.on('accountsChanged', handleAccountsChanged);
-
-  return [account];
 };
