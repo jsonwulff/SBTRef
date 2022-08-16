@@ -1,14 +1,15 @@
 import { Button, Grid, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import { useState } from 'react';
-import { useAccount } from './web3/hooks/useAccount';
+import AppBar from './components/AppBar';
 import { useOwnable } from './web3/hooks/useOwnable';
+import { useStartApp } from './web3/hooks/useStartApp';
 
 // const helloWorldContract = getContractInstance(HelloWorld.abi as AbiItem[]);
 
 export const App = () => {
   const [name, setName] = useState();
-  useAccount();
+  useStartApp();
   const [getOwner] = useOwnable();
 
   const hancleOnClick = () => {
@@ -47,18 +48,21 @@ export const App = () => {
   // };
 
   return (
-    <Container>
-      <Grid container direction="column">
-        <Grid item>
-          <Typography>My name is {name}</Typography>
-        </Grid>
-        {/* <Grid item>
+    <>
+      <AppBar />
+      <Container>
+        <Grid container direction="column">
+          <Grid item>
+            <Typography>My name is {name}</Typography>
+          </Grid>
+          {/* <Grid item>
           <TextField value={name} onChange={handleChange} />
         </Grid> */}
-        <Grid item>
-          <Button onClick={hancleOnClick}>Create card</Button>
+          <Grid item>
+            <Button onClick={hancleOnClick}>Create card</Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   );
 };

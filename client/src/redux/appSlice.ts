@@ -3,10 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface AppState {
   account: string;
+  error: string | null;
 }
 
 const initialState: AppState = {
   account: '0',
+  error: null,
 };
 
 export const appSlice = createSlice({
@@ -14,11 +16,17 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     setAccount: (state, action: PayloadAction<string>) => {
-      state.account += action.payload;
+      state.account = action.payload;
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
 });
 
-export const { setAccount } = appSlice.actions;
+export const { setAccount, setError, clearError } = appSlice.actions;
 
 export default appSlice.reducer;

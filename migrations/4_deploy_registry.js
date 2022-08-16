@@ -1,12 +1,11 @@
-// Import the HelloWorld contract...
-const Token = artifacts.require("TCGTok");
-const Reg = artifacts.require("TCGReg");
-
+const addressToEnv = require('./helpers/addressToEnv');
+const Token = artifacts.require('TCGTok');
+const Reg = artifacts.require('TCGReg');
 
 module.exports = async (deployer, network, accounts) => {
-  // Deploy it!
-    const ins = await Token.deployed()
-    console.log(ins.address)
-    await deployer.deploy(Reg, ins.address)
-
-}
+  const ins = await Token.deployed();
+  await deployer.deploy(Reg, ins.address).then(() => {
+    addressToEnv(ins.address, 'TOKEN_ADDRESS', 'w+');
+    addressToEnv(Reg.address, 'REGISTRY_ADDRESS', 'a');
+  });
+};
