@@ -14,11 +14,7 @@ contract TCGReg is Ownable {
     // Internal so we can 'hide' information in some calls
     mapping (address => PlayerInfo) internal _playerInfo;
 
-    address public token_addr;
-
-    constructor(address token) Ownable() {
-        token_addr = token;
-    }
+    constructor() Ownable() {}
 
     function getIsRegistered(address who) public view returns (bool) {
         return _playerInfo[who].playerLevel != 0;
@@ -40,8 +36,8 @@ contract TCGReg is Ownable {
         return _playerInfo[who].playerLevel;
     }
 
-    function changeTokenAddr(address token) public onlyOwner{
-        token_addr = token;
+    function incrementTrades(address who) public isRegistered(who) {
+        _playerInfo[who].trades++;
     }
 
 }
