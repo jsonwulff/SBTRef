@@ -1,4 +1,5 @@
 import { toWei } from 'web3-utils';
+import { Card } from '../../redux/cardsSlice';
 import { tokContract } from '../provider';
 export type PackSize = 10 | 20 | 50;
 
@@ -21,18 +22,23 @@ export const buyPacks = (fromAccount: string, packSize: PackSize) => {
   }
 };
 
-export const getCardDetails = (id: string) => {
-  return tokContract.methods.stats(id).call();
+export const getCardDetails = (id: string): Promise<Card> => {
+  return tokContract.methods
+    .stats(id)
+    .call()
+    .then((result: Card) => {
+      const { ...object } = result;
+      return object;
+    });
 };
 
-export const getCardsByOwner = (owner: string) => {
+export const getCardsByOwner = (owner: string): Promise<string[]> => {
   return tokContract.methods.getCardsByOwner(owner).call({ from: owner });
 };
+
 export const getCardsWithStatsByOwner = (owner: string) => {
-  return getCardsByOwner(owner).then((ids: string[]) => {
-    console.log('got:', ids);
-    ids.map((id: string) => {
-      getCardDetails(id).then(console.log);
-    });
+  return getCardsByOwner(owner).then((ids) => {
+    const detailPromises = ids.map((id) => getCardDetails(id));
+    return Promise.all(detailPromises);
   });
 };

@@ -8,18 +8,10 @@ import {
   TableRow,
 } from '@mui/material';
 import Box, { BoxProps } from '@mui/material/Box';
-import { useEffect } from 'react';
-import { getAllCards } from '../../redux/cardsSlice';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppSelector } from '../../redux/store';
 
 export const Cards = (props: BoxProps) => {
-  const dispatch = useAppDispatch();
-  const cards = useAppSelector((state) => state.cards.cards);
-  useEffect(() => {
-    if (cards.length === 0) {
-      dispatch(getAllCards());
-    }
-  }, [cards, dispatch]);
+  const cards = useAppSelector((state) => state.cards.myCards);
 
   return (
     <Box {...props}>
@@ -40,7 +32,6 @@ export const Cards = (props: BoxProps) => {
                 <TableCell component="th" scope="row">
                   {card.id}
                 </TableCell>
-                <TableCell>{card.ownerAddress}</TableCell>
               </TableRow>
             ))}
           </TableBody>
