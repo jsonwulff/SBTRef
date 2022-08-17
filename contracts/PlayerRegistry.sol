@@ -32,8 +32,8 @@ contract TCGReg is Ownable {
         _playerInfo[who].reputation = 50;
     }
 
-    function getPlayerLevel(address who) public isRegistered(who) view returns(uint256){
-        return _playerInfo[who].playerLevel;
+    function getPlayerInfo(address who) public isRegistered(who) view returns (PlayerInfo memory){
+        return _playerInfo[who];
     }
 
     function incrementTrades(address who) public isRegistered(who) {
