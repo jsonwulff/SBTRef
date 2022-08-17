@@ -21,6 +21,18 @@ export const buyPacks = (fromAccount: string, packSize: PackSize) => {
   }
 };
 
+export const getCardDetails = (id: string) => {
+  return tokContract.methods.stats(id).call();
+};
+
 export const getCardsByOwner = (owner: string) => {
   return tokContract.methods.getCardsByOwner(owner).call({ from: owner });
+};
+export const getCardsWithStatsByOwner = (owner: string) => {
+  return getCardsByOwner(owner).then((ids: string[]) => {
+    console.log('got:', ids);
+    ids.map((id: string) => {
+      getCardDetails(id).then(console.log);
+    });
+  });
 };
