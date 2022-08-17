@@ -60,7 +60,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     function getCardsByOwner(address _owner) external view returns(uint256[] memory) {
       uint256[] memory result = new uint[](balanceOf(_owner));
       uint counter = 0;
-      for (uint i = 0; i < _tokenIdCounter.current() + 1; i++) {
+      for (uint i = 0; i < _tokenIdCounter.current(); i++) {
         if (ownerOf(i) == _owner) {
           result[counter] = i;
           counter++;
