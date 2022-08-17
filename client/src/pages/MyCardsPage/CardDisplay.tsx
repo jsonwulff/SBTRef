@@ -36,7 +36,14 @@ export const CardDisplay = ({ card, ...rest }: CardDisplayProps) => {
 
   return (
     <Grid item sm={3} {...rest}>
-      <Paper elevation={3} sx={{ p: 1 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 1,
+          transition: 'all .2s ease-in-out',
+          '&:hover': { transform: 'scale(1.05)' },
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
