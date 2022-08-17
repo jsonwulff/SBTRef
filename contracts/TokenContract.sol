@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./PlayerRegistry.sol";
 
 contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     using Counters for Counters.Counter;
@@ -38,11 +39,23 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     Counters.Counter private _nonce;
     uint private _packCost = 0.00264 ether; // approx 5 usd
     uint private _cardTypeAmount = 120;
+    TCGReg private _registry;
 
     mapping (uint => Trade) public trades;
     mapping (uint => Statblok) public stats;
 
-    constructor() ERC721("NFTC Token", "NFTC") {}
+    constructor(address _registryAddress) ERC721("NFTC Token", "NFTC") {
+        _registry = TCGReg(_registryAddress);
+    }
+
+    function changeRegistryAddress(address _newRegistryAddress) external onlyOwner {
+        _registry = TCGReg(_newRegistryAddress);
+    }
+
+    modifier isRegistered(address who) {
+        require (_registry.getIsRegistered(who), "Player isn't registered");
+        _;
+    }
 
     function getCardsByOwner(address _owner) external view returns(uint256[] memory) {
       uint256[] memory result = new uint[](balanceOf(_owner));
@@ -169,7 +182,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         return super.tokenURI(_tokenId);
     }
 
-    function makeTradeOffer(address _from, address _to, uint[] memory _offer, uint[] memory _wants) external {
+    function makeTradeOffer(address _from, address _to, uint[] memory _offer, uint[] memory _wants) external isRegistered(_from) isRegistered(_to) {
         require(msg.sender == _from, "Sender must be offerer");
         require(_from != _to, "Cannot trade with yourself");
 
@@ -247,11 +260,15 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         _packCost = _amount;
     }
 
+    function getPackCost() external view returns (uint) {
+        return _packCost;
+    }
+
     function withdrawEth() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }
 
-    function buyPackOfTen(address _to) external payable {
+    function buyPackOfTen(address _to) external payable isRegistered(_to) {
         uint newPackCost = _packCost;
         require(msg.value >= newPackCost);
 
@@ -264,7 +281,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
     }
 
-    function buyPackOfTwenty(address _to) external payable {
+    function buyPackOfTwenty(address _to) external payable isRegistered(_to) {
         uint newPackCost = _packCost * 2;
         require(msg.value >= newPackCost, "Not enough ETH");
 
@@ -277,7 +294,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
     }
 
-    function buyPackOfFifty(address _to) external payable {
+    function buyPackOfFifty(address _to) external payable isRegistered(_to) {
         uint newPackCost = _packCost * 5;
         require(msg.value >= newPackCost, "Not enough ETH");
 

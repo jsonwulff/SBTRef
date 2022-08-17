@@ -1,9 +1,13 @@
 const TCGTok = artifacts.require("TCGTok");
+const TCGReg = artifacts.require("TCGReg");
 const utils = require("./utils");
 contract('TCGTok', (accounts) => {
     let [acc1, acc2, acc3, acc4, acc5, acc6, acc7, acc8, acc9, acc10] = accounts;
     beforeEach(async () => {
-        contractInstance = await TCGTok.new();
+        let reg = await TCGReg.new();
+        await reg.register({from: acc1});
+        await reg.register({from: acc2});
+        contractInstance = await TCGTok.new(reg.address);
     });
     afterEach(async () => {
         await contractInstance.withdrawEth({from: acc1});
@@ -27,6 +31,12 @@ contract('TCGTok', (accounts) => {
     // ######################### TESTING TRADES  ###########################
     // #####################################################################
     context('Trading', async () => {
+        it('should only be able to offer trade if registered', async () => {
+            utils.shouldThrow(contractInstance.makeTradeOffer(acc3, acc1, [], [], {from: acc3}));
+        });
+        it('should only be able to offer trade if recipient is registered', async () => {
+            utils.shouldThrow(contractInstance.makeTradeOffer(acc1, acc3, [], [], {from: acc1}));
+        });
         it('should be able to offer trade', async () => {
             await contractInstance.safeMint(acc2, "0", 0, {from: acc1});
             await contractInstance.makeTradeOffer(acc1, acc2, [], [0], {from: acc1});
@@ -119,13 +129,17 @@ contract('TCGTok', (accounts) => {
             utils.shouldThrow(contractInstance.buyPackOfTen(acc1, {from: acc1, value: 0}));
         });
         it('should be able to change the price of a pack', async () => {
-            await contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei("0.1", "ether")});
+            await contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei("1", "ether")});
             await contractInstance.setPackCost(web3.utils.toWei("0.2", "ether"), {from: acc1});
             utils.shouldThrow(contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei("0.1", "ether")}));
+            assert.equal(await contractInstance.getPackCost(), web3.utils.toWei("0.2", "ether"));
         });
         context('Buying', async () => {
+            it('should only be able to buy a pack if registered', async () => {
+                utils.shouldThrow(contractInstance.buyPackOfTen(acc3, {from: acc3, value: web3.utils.toWei("1", "ether")}));
+            });
             it('should be able to buy a pack of 10', async () => {
-                await contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei("0.1", "ether")});
+                await contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei("1", "ether")});
         
                 for (let i = 0; i < 10; i++) {
                     assert.equal(await contractInstance.ownerOf(i), acc1);
