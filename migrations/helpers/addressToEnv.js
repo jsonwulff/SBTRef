@@ -5,7 +5,6 @@ const fs = require('fs');
 /// @param name - Name of the contract (suffix of the REACT_APP_ .env variable)
 /// @param writeOption - 'w+' used for the first contract in the deployment or, 'a' for the rest
 module.exports = (address, name, writeOption) => {
-  console.log('saving .env file');
   fs.writeFileSync(
     './client/.env',
     `REACT_APP_${name.toUpperCase()}=${address}\n`,

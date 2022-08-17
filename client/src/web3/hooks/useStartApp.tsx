@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAccount, setError } from '../../redux/appSlice';
+import { setAccount, setError, setIsRegistered } from '../../redux/appSlice';
 import { RootState } from '../../redux/store';
+import { isRegistered } from '../interfaces/PlayerRegistryContract';
 import { eth } from '../provider';
 
 export const useStartApp = () => {
@@ -12,6 +13,7 @@ export const useStartApp = () => {
     eth
       .requestAccounts()
       .then((result) => {
+        // if(result[0])
         dispatch(setAccount(result[0]));
       })
       .catch((error) => {
@@ -19,7 +21,7 @@ export const useStartApp = () => {
           setError("Couldn't find any account please connect with MetaMask")
         );
       });
-  }, []);
+  }, [dispatch]);
 
   const handleAccountsChanged = (accounts: any) => {
     const currentAccount = accounts as string[];
@@ -31,4 +33,12 @@ export const useStartApp = () => {
   };
 
   window.ethereum.on('accountsChanged', handleAccountsChanged);
+
+  useEffect(() => {
+    if (account !== '0') {
+      isRegistered(account).then((result) => {
+        dispatch(setIsRegistered(result));
+      });
+    }
+  }, [account, dispatch]);
 };
