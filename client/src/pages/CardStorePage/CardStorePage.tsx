@@ -1,9 +1,10 @@
 import { Container, Divider, Grid, Typography } from '@mui/material';
+import { PackSize } from '../../web3/interfaces/TokenContract';
 import { PackOffer } from './PackOffer';
 
 export interface PackOfferType {
   name: string;
-  numCards: number;
+  numCards: PackSize;
   price: number;
 }
 
