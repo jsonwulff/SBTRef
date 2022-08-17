@@ -21,6 +21,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     }
 
     struct Statblok {
+        uint id;
         uint8 cardType;
         uint8 rarity;
         uint8 str;
@@ -55,6 +56,10 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     modifier isRegistered(address who) {
         require (_registry.getIsRegistered(who), "Player isn't registered");
         _;
+    }
+
+    function getCardStats(uint _cardId) public view returns (Statblok memory) {
+        return stats[_cardId];
     }
 
     function getCardsByOwner(address _owner) external view returns(uint256[] memory) {
@@ -128,6 +133,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 
     function _setTokenStats(uint _rarity, uint _tokenId, uint _cardType) internal {
         stats[_tokenId] = Statblok({
+            id: _tokenId,
             cardType: uint8(_cardType),
             rarity: uint8(_rarity),
             str: uint8(_roll(_rarity, 8)),
@@ -182,12 +188,12 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         return super.tokenURI(_tokenId);
     }
 
-    function makeTradeOffer(address _from, address _to, uint[] memory _offer, uint[] memory _wants) external isRegistered(_from) isRegistered(_to) {
-        require(msg.sender == _from, "Sender must be offerer");
-        require(_from != _to, "Cannot trade with yourself");
+    function makeTradeOffer(address _to, uint[] memory _offer, uint[] memory _wants) external isRegistered(msg.sender) isRegistered(_to) {
+        address from = msg.sender;
+        require(from != _to, "Cannot trade with yourself");
 
         for (uint i = 0 ; i < _offer.length; i++) {
-            require(ownerOf(_offer[i]) == _from, "Sender doesn't own card");
+            require(ownerOf(_offer[i]) == from, "Sender doesn't own card");
         }
 
         for (uint i = 0 ; i < _wants.length; i++) {
@@ -197,7 +203,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         _tradeIdCounter.increment();
         Trade memory trade = Trade({
             id: _tradeIdCounter.current(),
-            offerer: _from,
+            offerer: from,
             reciever: _to,
             offers: _offer,
             wants: _wants,
@@ -205,7 +211,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         });
 
         trades[trade.id] = trade;
-        emit TradeOffered(trade.id, _from, _to);
+        emit TradeOffered(trade.id, from, _to);
     }
 
     function acceptTrade(uint _tradeId) external {
@@ -224,6 +230,8 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
 
         trade.closed = true;
+        _registry.incrementTrades(trade.offerer);
+        _registry.incrementTrades(trade.reciever);
 
         emit TradeAccept(trade.id, trade.offerer, trade.reciever);
     }
