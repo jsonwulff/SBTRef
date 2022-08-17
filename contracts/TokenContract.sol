@@ -22,12 +22,12 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 
     struct Statblok {
         uint id;
+        uint traded;
         uint8 cardType;
         uint8 rarity;
         uint8 str;
         uint8 def;
         uint8 hlt;
-        uint traded;
     }
 
     event TradeOffered(uint tradeId, address sender, address reciever);
@@ -56,10 +56,6 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     modifier isRegistered(address who) {
         require (_registry.getIsRegistered(who), "Player isn't registered");
         _;
-    }
-
-    function getCardStats(uint _cardId) public view returns (Statblok memory) {
-        return stats[_cardId];
     }
 
     function getCardsByOwner(address _owner) external view returns(uint256[] memory) {
