@@ -8,7 +8,7 @@ module.exports = async (deployer, network, accounts) => {
   let ins = await Token.deployed();
   // List of promises of minting
   let ps = accounts.map((acc) => {
-    ins.safeMint(acc, '');
+    ins.safeMint(acc, '', 0);
   });
   await Promise.all(ps);
 };
