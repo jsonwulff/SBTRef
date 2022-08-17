@@ -1,4 +1,5 @@
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import {
   AppBar as MuiAppBar,
   Box,
@@ -24,17 +25,15 @@ export default function AppBar() {
   };
 
   return (
-    <MuiAppBar position="static">
+    <MuiAppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
-        {/* <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton> */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <CollectionsIcon sx={{ mr: 2 }} />
+          <Typography variant="h6">NF Trading Cards</Typography>
+        </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography>{account}</Typography>
           <IconButton
