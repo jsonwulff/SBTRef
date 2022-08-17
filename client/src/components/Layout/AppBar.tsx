@@ -1,5 +1,4 @@
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar as MuiAppBar,
   Box,
@@ -10,10 +9,10 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useAppSelector } from '../redux/store';
+import { useAppSelector } from '../../redux/store';
 
 export default function AppBar() {
-  const account = useAppSelector((state) => state.app.account);
+  const { account, registered } = useAppSelector((state) => state.app);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,7 +26,7 @@ export default function AppBar() {
   return (
     <MuiAppBar position="static">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <IconButton
+        {/* <IconButton
           size="large"
           edge="start"
           color="inherit"
@@ -35,7 +34,7 @@ export default function AppBar() {
           sx={{ mr: 2 }}
         >
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography>{account}</Typography>
           <IconButton

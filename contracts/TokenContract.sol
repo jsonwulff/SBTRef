@@ -41,6 +41,18 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 
     constructor() ERC721("NFTC Token", "NFTC") {}
 
+    function getCardsByOwner(address _owner) external view returns(uint256[] memory) {
+      uint256[] memory result = new uint[](balanceOf(_owner));
+      uint counter = 0;
+      for (uint i = 0; i < _tokenIdCounter.current() + 1; i++) {
+        if (ownerOf(i) == _owner) {
+          result[counter] = i;
+          counter++;
+        }
+      }
+      return result;
+    }
+
     function _baseURI() internal pure override returns (string memory) {
         return "cshare.dk/nft/";
     }
