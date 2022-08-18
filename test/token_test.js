@@ -5,8 +5,8 @@ contract('TCGTok', (accounts) => {
     let [acc1, acc2, acc3, acc4, acc5, acc6, acc7, acc8, acc9, acc10] = accounts;
     beforeEach(async () => {
         let reg = await TCGReg.new();
-        await reg.register({from: acc1});
-        await reg.register({from: acc2});
+        await reg.register('acc1', {from: acc1});
+        await reg.register('acc2', {from: acc2});
         contractInstance = await TCGTok.new(reg.address);
     });
     afterEach(async () => {
@@ -134,7 +134,7 @@ contract('TCGTok', (accounts) => {
             utils.shouldThrow(contractInstance.closeTrade(10, {from: acc1}));
         });
         it('should start with 0 trades on the card', async () => {
-            let res = await contractInstance.getCardStats(0);
+            let res = await contractInstance.stats(0);
             assert.equal(res.traded, 0);
         });
         it('should increment the trading amount on the card', async () => {
@@ -142,7 +142,7 @@ contract('TCGTok', (accounts) => {
             await contractInstance.makeTradeOffer(acc2, [], [0], {from: acc1});
             await contractInstance.acceptTrade(1, {from: acc2});
 
-            let res = await contractInstance.getCardStats(0);
+            let res = await contractInstance.stats(0);
             assert.equal(res.traded, 1);
         });
     });
@@ -181,6 +181,10 @@ contract('TCGTok', (accounts) => {
                 await contractInstance.buyPackOfTen(acc1, {from: acc1, value: web3.utils.toWei('1', 'ether')});
                 await contractInstance.buyPackOfTwenty(acc1, {from: acc1, value: web3.utils.toWei('1', 'ether')});
                 assert(await contractInstance.balanceOf(acc1), 30);
+            });
+            it('should be able to buy a pack if you are not the owner', async () => {
+                await contractInstance.buyPackOfTen(acc2, {from: acc2, value: web3.utils.toWei('1', 'ether')});
+                assert(await contractInstance.balanceOf(acc2), 10);
             });
         });
     });

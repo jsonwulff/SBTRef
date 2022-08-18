@@ -32,8 +32,6 @@ contract TCGReg is Ownable {
     // Hash is uint256(keccak256(abi.encode(username)))
     mapping (uint256 => address) internal _usernames;
 
-    // Address for token contract
-    address public _tokenContract;
     //!  _              _
     //! | |   ___  __ _(_)__
     //! | |__/ _ \/ _` | / _|
@@ -52,17 +50,6 @@ contract TCGReg is Ownable {
         require(who != address(0), "Username not found");
         require (getIsRegistered(who), "Player isn't registered");
         _;
-    }
-
-    // Modifier that only allows calls from the token contract
-    modifier isFromTokenContract(){
-        require (_tokenContract != address(0));
-        require (msg.sender == _tokenContract, "Unauthorized sender");
-        _;
-    }
-
-    function setTokenContract(address tokenAddr) public onlyOwner() {
-        _tokenContract = tokenAddr;
     }
 
     // Looks up an address by a given username
@@ -90,7 +77,7 @@ contract TCGReg is Ownable {
     // Register a succesful trade for two players
     // Require a valid unseen tradeID
     // NOTE: Currently has no way to verify the tradeId actually exists in token
-    function incrementTrades(address from, address to) public isFromTokenContract() isRegistered(from) isRegistered(to) {
+    function incrementTrades(address from, address to) public isRegistered(from) isRegistered(to) {
         // Bookkeeping mostly
         playerInfo[from].trades++;
         playerInfo[to].trades++;
