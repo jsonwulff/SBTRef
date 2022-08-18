@@ -20,10 +20,10 @@ contract TCGReg is Ownable {
         uint256 indexed usernameHash,
         string username
     );
-    //  ___ _        _       
-    // / __| |_ __ _| |_ ___ 
-    // \__ \  _/ _` |  _/ -_)
-    // |___/\__\__,_|\__\___|
+    //!  ___ _        _       
+    //! / __| |_ __ _| |_ ___ 
+    //! \__ \  _/ _` |  _/ -_)
+    //! |___/\__\__,_|\__\___|
 
     // Internal so we can 'hide' information in some calls
     mapping (address => PlayerInfo) internal _playerInfo;
@@ -36,11 +36,11 @@ contract TCGReg is Ownable {
     // To ensure trades are only registered once
     mapping (uint256 => bool) internal _tradeRegistry;
 
-    //  _              _
-    // | |   ___  __ _(_)__
-    // | |__/ _ \/ _` | / _|
-    // |____\___/\__, |_\__|
-    //           |___/
+    //!  _              _
+    //! | |   ___  __ _(_)__
+    //! | |__/ _ \/ _` | / _|
+    //! |____\___/\__, |_\__|
+    //!           |___/
 
     // Modifier to ensure an adress has been seen before
     modifier isRegistered(address who) {
@@ -89,10 +89,10 @@ contract TCGReg is Ownable {
         _tradeRegistry[tradeId] == true;
     }
 
-    //      _               
-    // __ _(_)_____ __ _____
-    // \ V / / -_) V  V (_-<
-    //  \_/|_\___|\_/\_//__/
+    //!       _               
+    //!  __ _(_)_____ __ _____
+    //!  \ V / / -_) V  V (_-<
+    //!   \_/|_\___|\_/\_//__/
     function getIsRegistered(address who) public view returns (bool) {
         return _playerInfo[who].playerLevel != 0;
     }
