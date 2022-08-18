@@ -26,7 +26,7 @@ contract TCGReg is Ownable {
     //! |___/\__\__,_|\__\___|
 
     // Internal so we can 'hide' information in some calls
-    mapping (address => PlayerInfo) internal _playerInfo;
+    mapping (address => PlayerInfo) public playerInfo;
     
     // Internal username database
     // Hash is uint256(keccak256(abi.encode(username)))
@@ -73,7 +73,7 @@ contract TCGReg is Ownable {
         uint256 uhash = uint256(keccak256(abi.encode(username)));
         // Set default stats
         _usernames[uhash] = who;
-        _playerInfo[who] = defaultPlayerInfo();
+        playerInfo[who] = defaultPlayerInfo();
         // Emit events
         emit UserRegister(who, uhash, username); 
     }
@@ -84,8 +84,8 @@ contract TCGReg is Ownable {
     function incrementTrades(address from, address to, uint tradeId) public isRegistered(from) isRegistered(to) {
         // Bookkeeping mostly
         require(!_tradeRegistry[tradeId], "Trade has already been processed by user registry");
-        _playerInfo[from].trades++;
-        _playerInfo[to].trades++;
+        playerInfo[from].trades++;
+        playerInfo[to].trades++;
         _tradeRegistry[tradeId] == true;
     }
 
@@ -94,11 +94,11 @@ contract TCGReg is Ownable {
     //!  \ V / / -_) V  V (_-<
     //!   \_/|_\___|\_/\_//__/
     function getIsRegistered(address who) public view returns (bool) {
-        return _playerInfo[who].playerLevel != 0;
+        return playerInfo[who].playerLevel != 0;
     }
 
     function getPlayerInfo(address who) public isRegistered(who) view returns (PlayerInfo memory){
-        return _playerInfo[who];
+        return playerInfo[who];
     }
 
     // polymorphic lookup functions for usernames and address
@@ -106,13 +106,13 @@ contract TCGReg is Ownable {
         return getPlayerLevel(lookupUsername(username));
     }
     function getPlayerLevel(address who) public view isRegistered(who) returns (uint256){
-        return _playerInfo[who].playerLevel;
+        return playerInfo[who].playerLevel;
     }
     function getPlayerTrades(string calldata username) public view isUsernameRegistered(username) returns (uint256) {
         return getPlayerTrades(lookupUsername(username));
     }
     function getPlayerTrades(address who) public view isRegistered(who) returns (uint256){
-        return _playerInfo[who].trades;
+        return playerInfo[who].trades;
     }
 
 }
