@@ -226,7 +226,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
 
         trade.closed = true;
-        _registry.incrementTrades(trade.offerer, trade.reciever, _tradeId);
+        _registry.incrementTrades(trade.offerer, trade.reciever);
 
         emit TradeAccept(trade.id, trade.offerer, trade.reciever);
     }
