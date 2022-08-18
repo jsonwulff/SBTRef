@@ -38,6 +38,12 @@ export const rarityToString: { [index: string]: string } = {
   '3': 'Rare',
 };
 
+export const rarityToColor: { [index: string]: string } = {
+  '1': 'rgba(157,157,157,1)',
+  '2': 'rgba(63,155,251,1)',
+  '3': 'rgba(251,63,244,1)',
+};
+
 type NamesMapType = {
   [index: string]: string;
 };

@@ -2,11 +2,13 @@ import { AnyAction, configureStore, ThunkDispatch } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import appSlice from './appSlice';
 import cardsSlice from './cardsSlice';
+import playersSlice from './playersSlice';
 
 export const store = configureStore({
   reducer: {
     app: appSlice,
     cards: cardsSlice,
+    players: playersSlice,
   },
 });
 

@@ -2,8 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract TCGReg is Ownable {
+    using Counters for Counters.Counter;
 
     struct PlayerInfo{
         uint256 trades;
@@ -11,13 +13,15 @@ contract TCGReg is Ownable {
         uint256 reputation;
     }
 
+    event PlayerRegistered(address indexed player);
+
     // Internal so we can 'hide' information in some calls
-    mapping (address => PlayerInfo) internal _playerInfo;
+    mapping (address => PlayerInfo) public playerInfo;
 
     constructor() Ownable() {}
 
     function getIsRegistered(address who) public view returns (bool) {
-        return _playerInfo[who].playerLevel != 0;
+        return playerInfo[who].playerLevel != 0;
     }
 
     modifier isRegistered(address who) {
@@ -27,17 +31,18 @@ contract TCGReg is Ownable {
     
     function register() public {
         address who = msg.sender;
-        require(_playerInfo[who].playerLevel == 0, "Player is already registered");
-        _playerInfo[who].playerLevel = 1;
-        _playerInfo[who].reputation = 50;
+        require(playerInfo[who].playerLevel == 0, "Player is already registered");
+        playerInfo[who].playerLevel = 1;
+        playerInfo[who].reputation = 50;
+        emit PlayerRegistered(who);
     }
 
     function getPlayerInfo(address who) public isRegistered(who) view returns (PlayerInfo memory){
-        return _playerInfo[who];
+        return playerInfo[who];
     }
 
     function incrementTrades(address who) public isRegistered(who) {
-        _playerInfo[who].trades++;
+        playerInfo[who].trades++;
     }
 
 }
