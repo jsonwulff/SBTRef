@@ -1,32 +1,24 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { setAccount, setError, setIsRegistered } from '../../redux/appSlice';
 import { RootState } from '../../redux/store';
 import { isRegistered } from '../interfaces/PlayerRegistryContract';
-import { eth } from '../provider';
 
 export const useStartApp = () => {
   const account = useSelector((state: RootState) => state.app.account);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    eth
-      .requestAccounts()
-      .then((result) => {
-        // if(result[0])
-        dispatch(setAccount(result[0]));
-      })
-      .catch((error) => {
-        dispatch(
-          setError("Couldn't find any account please connect with MetaMask")
-        );
-      });
-  }, [dispatch]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleAccountsChanged = (accounts: any) => {
     const currentAccount = accounts as string[];
     if (currentAccount.length === 0) {
+      if (location.pathname !== '/') {
+        navigate('/');
+      }
       dispatch(setError('Please connect to MetaMask'));
+      dispatch(setAccount('0'));
     } else if (currentAccount[0] !== account) {
       dispatch(setAccount(currentAccount[0]));
     }

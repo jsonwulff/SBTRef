@@ -1,11 +1,18 @@
 import { regContract } from '../provider';
 
-export const register = (fromAccount: string) => {
-  return regContract.methods.register().send({ from: fromAccount });
+export const register = (nickname: string, from: string) => {
+  return regContract.methods.register(nickname).send({ from });
 };
 
 export const isRegistered = (account: string): Promise<boolean> => {
   return regContract.methods.getIsRegistered(account).call({ from: account });
+};
+
+export const lookupUsername = (
+  username: string,
+  from: string
+): Promise<any> => {
+  return regContract.methods.lookupUsername(username).call({ from });
 };
 
 export const getPlayerInfo = (account: string): Promise<any> => {

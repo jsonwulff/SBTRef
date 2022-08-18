@@ -5,7 +5,7 @@ import TCGToken from './artifacts/TCGTok.json';
 
 // Typescript infering example: https://www.turfemon.com/infer-types-from-ethereum-json-abi
 
-const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+export const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 export const eth = web3.eth;
 
 const getContractInstance = (

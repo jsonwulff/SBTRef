@@ -1,16 +1,22 @@
+import { AlertColor } from '@mui/material';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+
+export interface PopUpMessage {
+  message: string;
+  type: AlertColor;
+}
 
 export interface AppState {
   account: string;
   registered: boolean;
-  error: string | null;
+  popUpMessage: PopUpMessage | null;
 }
 
 const initialState: AppState = {
   account: '0',
   registered: false,
-  error: null,
+  popUpMessage: null,
 };
 
 export const appSlice = createSlice({
@@ -19,21 +25,28 @@ export const appSlice = createSlice({
   reducers: {
     setAccount: (state, action: PayloadAction<string>) => {
       state.account = action.payload;
-      state.error = null;
     },
     setIsRegistered: (state, action: PayloadAction<boolean>) => {
       state.registered = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
+      state.popUpMessage = { message: action.payload, type: 'error' };
     },
-    clearError: (state) => {
-      state.error = null;
+    setSuccess: (state, action: PayloadAction<string>) => {
+      state.popUpMessage = { message: action.payload, type: 'success' };
+    },
+    clearPopUpMessage: (state) => {
+      state.popUpMessage = null;
     },
   },
 });
 
-export const { setAccount, setError, clearError, setIsRegistered } =
-  appSlice.actions;
+export const {
+  setAccount,
+  setError,
+  setSuccess,
+  clearPopUpMessage,
+  setIsRegistered,
+} = appSlice.actions;
 
 export default appSlice.reducer;

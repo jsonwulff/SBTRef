@@ -16,7 +16,7 @@ export const MyCardsPage = () => {
     getCardsWithStatsByOwner(account).then((result) => {
       dispatch(setMyCards(result));
     });
-  }, []);
+  }, [account, dispatch]);
 
   return (
     <Container>
