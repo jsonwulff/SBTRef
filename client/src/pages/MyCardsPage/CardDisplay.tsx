@@ -40,7 +40,7 @@ export const CardDisplay = ({ card, ...rest }: CardDisplayProps) => {
   });
 
   return (
-    <Grid item sm={4} md={4} lg={3} {...rest}>
+    <Grid item xs={12} sm={6} md={4} lg={3} {...rest}>
       <MuiCard
         elevation={3}
         sx={{

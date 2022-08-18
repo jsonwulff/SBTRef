@@ -1,3 +1,4 @@
+import { HowToRegRounded } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { Box, Grid, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -81,6 +82,7 @@ export const Register = () => {
           <LoadingButton
             loading={loading}
             loadingPosition="start"
+            startIcon={<HowToRegRounded />}
             variant="contained"
             onClick={handleOnRegister}
           >

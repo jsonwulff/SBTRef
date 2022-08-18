@@ -1,5 +1,8 @@
 import { Container, Divider, Grid, Typography } from '@mui/material';
-import { PackSize } from '../../web3/interfaces/TokenContract';
+import { useEffect } from 'react';
+import { setPackCost } from '../../redux/cardsSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { getPackCost, PackSize } from '../../web3/interfaces/TokenContract';
 import { PackOffer } from './PackOffer';
 
 export interface PackOfferType {
@@ -9,12 +12,21 @@ export interface PackOfferType {
 }
 
 const packOffers: PackOfferType[] = [
-  { name: 'Small pack', numCards: 10, price: 10 },
-  { name: 'Medium pack', numCards: 20, price: 20 },
-  { name: 'Large pack', numCards: 50, price: 50 },
+  { name: 'Small pack', numCards: 10, price: 1 },
+  { name: 'Medium pack', numCards: 20, price: 2 },
+  { name: 'Large pack', numCards: 50, price: 5 },
 ];
 
 export const CardStorePage = () => {
+  const account = useAppSelector((state) => state.app.account);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    getPackCost(account).then((result) => {
+      dispatch(setPackCost(Number(result)));
+    });
+  }, [dispatch, account]);
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>

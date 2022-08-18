@@ -13,10 +13,12 @@ export interface Card {
 
 export interface CardsState {
   myCards: Card[];
+  packCost: number | null;
 }
 
 const initialState: CardsState = {
   myCards: [],
+  packCost: null,
 };
 
 export const cardsSlice = createSlice({
@@ -26,9 +28,12 @@ export const cardsSlice = createSlice({
     setMyCards: (state, action: PayloadAction<Card[]>) => {
       state.myCards = action.payload;
     },
+    setPackCost: (state, action: PayloadAction<number>) => {
+      state.packCost = action.payload;
+    },
   },
 });
 
-export const { setMyCards } = cardsSlice.actions;
+export const { setMyCards, setPackCost } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

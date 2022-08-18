@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface PlayerInfo {
+  nickname: string;
   address: string;
   trades: string;
   playerLevel: string;

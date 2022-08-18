@@ -42,3 +42,7 @@ export const getCardsWithStatsByOwner = (owner: string) => {
     return Promise.all(detailPromises);
   });
 };
+
+export const getPackCost = (from: string): Promise<string> => {
+  return tokContract.methods.getPackCost().call({ from });
+};

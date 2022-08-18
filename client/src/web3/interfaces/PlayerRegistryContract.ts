@@ -27,7 +27,7 @@ export const getPlayerInfo = (account: string): Promise<any> => {
 };
 
 export const getAllPlayerAddresses = (): Promise<any> => {
-  return regContract.getPastEvents('PlayerRegistered', {
+  return regContract.getPastEvents('UserRegister', {
     fromBlock: 0,
     toBlock: 'latest',
   });
@@ -35,11 +35,18 @@ export const getAllPlayerAddresses = (): Promise<any> => {
 
 export const getAllPlayerInfo = (): Promise<any> => {
   return getAllPlayerAddresses().then((events) => {
-    const playerAddresses = events.map(
-      (events: any) => events.returnValues.player
-    );
-    const playerInfoPromises = playerAddresses.map((address: string) =>
-      getPlayerInfo(address)
+    console.log(events);
+    const players = events.map((event: any) => ({
+      address: event.returnValues.who,
+      nickname: event.returnValues.username,
+    }));
+    console.log(players);
+    const playerInfoPromises = players.map(
+      (player: { address: string; nickname: string }) =>
+        getPlayerInfo(player.address).then((result: any) => ({
+          ...result,
+          nickname: player.nickname,
+        }))
     );
     return Promise.all(playerInfoPromises);
   });

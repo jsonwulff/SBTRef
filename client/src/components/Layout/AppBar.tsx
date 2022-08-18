@@ -7,13 +7,15 @@ import {
   Menu,
   MenuItem,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { useAppSelector } from '../../redux/store';
+import { accountToShort } from '../../utils';
 
 export default function AppBar() {
-  const { account, registered } = useAppSelector((state) => state.app);
+  const { account } = useAppSelector((state) => state.app);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -23,6 +25,9 @@ export default function AppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const accountDisplay =
+    account === '0' ? 'Not connected' : accountToShort(account);
 
   return (
     <MuiAppBar
@@ -35,7 +40,16 @@ export default function AppBar() {
           <Typography variant="h6">NF Trading Cards</Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography>{account}</Typography>
+          <Tooltip
+            arrow
+            title={
+              account === '0'
+                ? 'Please connect with MetaMask to continue'
+                : account
+            }
+          >
+            <Typography variant="body2">{accountDisplay}</Typography>
+          </Tooltip>
           <IconButton
             size="large"
             aria-label="account of current user"
