@@ -75,12 +75,16 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     }
 
     function safeMint(address _to, string memory _uri, uint _cardType) public onlyOwner {
+        _mintNewCard(_to, _uri, _cardType);
+    }
+
+    function _mintNewCard(address _to, string memory _uri, uint _cardType) private {
         uint tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(_to, tokenId);
         _setTokenURI(tokenId, _uri);
         _setTokenStats(_generateRandomRarity(), tokenId, _cardType);
-    }
+    } 
 
     function _transfer(address _from, address _to, uint _tokenId) internal override(ERC721) {
         super._transfer(_from, _to, _tokenId);
@@ -280,7 +284,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
 
         for (uint i = 0; i < 10; i++) {
-            safeMint(_to, "", _generateRandomNum(0, _cardTypeAmount));
+            _mintNewCard(_to, "", _generateRandomNum(0, _cardTypeAmount));
         }
     }
 
@@ -293,7 +297,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
 
         for (uint i = 0; i < 20; i++) {
-            safeMint(_to, "", _generateRandomNum(0, _cardTypeAmount));
+            _mintNewCard(_to, "", _generateRandomNum(0, _cardTypeAmount));
         }
     }
 
@@ -306,7 +310,7 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         }
 
         for (uint i = 0; i < 50; i++) {
-            safeMint(_to, "", _generateRandomNum(0, _cardTypeAmount));
+            _mintNewCard(_to, "", _generateRandomNum(0, _cardTypeAmount));
         }
     }
 }
