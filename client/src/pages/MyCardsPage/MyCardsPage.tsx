@@ -65,8 +65,8 @@ export const MyCardsPage = () => {
       <Divider />
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {[...myCards].sort(dynamicSort(sortBy, 'desc')).map((card) => (
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <CardDisplay key={card.id} card={card} />
+          <Grid key={card.id} item xs={12} sm={6} md={4} lg={3}>
+            <CardDisplay card={card} />
           </Grid>
         ))}
       </Grid>
