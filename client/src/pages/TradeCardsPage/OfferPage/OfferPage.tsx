@@ -1,6 +1,7 @@
-import { Box, CircularProgress, Container } from '@mui/material';
+import { Box, CircularProgress, Container, Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { setMyCards } from '../../../redux/cardsSlice';
 import { PlayerInfo } from '../../../redux/playersSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { setTrader, setTraderCards } from '../../../redux/tradeSlice';
@@ -9,10 +10,14 @@ import {
   getPlayerName,
 } from '../../../web3/interfaces/PlayerRegistryContract';
 import { getCardsWithStatsByOwner } from '../../../web3/interfaces/TokenContract';
+import { Inventory } from './Inventory';
 import { OfferHeader } from './OfferHeader';
 
 export const OfferPage = () => {
-  const { trader } = useAppSelector((state) => state.trade);
+  const { account, trader } = useAppSelector((state) => ({
+    account: state.app.account,
+    trader: state.trade.trader,
+  }));
 
   const { address } = useParams();
   const dispatch = useAppDispatch();
@@ -22,14 +27,16 @@ export const OfferPage = () => {
       const traderInfo = getPlayerInfo(address);
       const traderName = getPlayerName(address);
       const traderCards = getCardsWithStatsByOwner(address);
-      const promises = [traderInfo, traderName, traderCards];
-      Promise.all(promises).then(([info, name, cards]) => {
+      const myCards = getCardsWithStatsByOwner(account);
+      const promises = [traderInfo, traderName, traderCards, myCards];
+      Promise.all(promises).then(([info, name, cards, myCards]) => {
         const player = { nickname: name, ...info } as PlayerInfo;
         dispatch(setTrader(player));
         dispatch(setTraderCards(cards));
+        dispatch(setMyCards(myCards));
       });
     }
-  }, [address, dispatch]);
+  }, [address, account, dispatch]);
 
   if (!trader) {
     return (
@@ -48,7 +55,14 @@ export const OfferPage = () => {
 
   return (
     <Container>
-      <OfferHeader {...trader} />
+      <Grid container spacing={2}>
+        <Grid item sm={12}>
+          <OfferHeader {...trader} />
+        </Grid>
+        <Grid item sm={6} md={6}>
+          <Inventory />
+        </Grid>
+      </Grid>
     </Container>
   );
 };
