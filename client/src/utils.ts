@@ -24,3 +24,11 @@ export function dynamicFilter<T extends {}>(property: KeyOf<T>, value: any) {
     return a[property] === value;
   };
 }
+
+// export function objStringsToObjInts(obj: {}) {
+//   const newObj = {};
+//   Object.keys(obj).forEach((key) => {
+//     newObj[key] = parseInt(obj[key]);
+//   } );
+//   return newObj;
+// }

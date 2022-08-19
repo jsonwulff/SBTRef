@@ -8,7 +8,7 @@ import { Register } from './Register';
 export const FrontPage = () => {
   const { account, registered } = useAppSelector((state) => state.app);
   const location = useLocation() as LocationWithState;
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || '/app';
 
   return (
     <Container sx={{ height: '100%' }}>

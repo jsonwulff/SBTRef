@@ -1,6 +1,16 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface CardFromContract extends Card {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+}
+
 export interface Card {
   id: string;
   traded: string;

@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import appSlice from './appSlice';
 import cardsSlice from './cardsSlice';
 import playersSlice from './playersSlice';
+import tradeSlice from './tradeSlice';
 
 export const store = configureStore({
   reducer: {
     app: appSlice,
     cards: cardsSlice,
     players: playersSlice,
+    trade: tradeSlice,
   },
 });
 

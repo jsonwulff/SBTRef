@@ -1,24 +1,22 @@
 import {
-  Chip,
   Container,
   Divider,
   Grid,
   Paper,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { setPlayers } from '../../redux/playersSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
-import { accountToShort } from '../../utils';
 import { getAllPlayerInfo } from '../../web3/interfaces/PlayerRegistryContract';
+import { LoadingTableRow } from './LoadingTableRow';
+import { PlayerTableRow } from './PlayerTableRow';
 
 export const TradeCardsPage = () => {
   const { account, players } = useAppSelector((state) => ({
@@ -34,7 +32,7 @@ export const TradeCardsPage = () => {
       dispatch(setPlayers(result));
       setLoading(false);
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <Container sx={{ pb: 4 }}>
@@ -53,63 +51,20 @@ export const TradeCardsPage = () => {
                   <TableCell align="right">Level</TableCell>
                   <TableCell align="right">Reputation</TableCell>
                   <TableCell align="right">Trades</TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {loading
                   ? Array.from(Array(10).keys()).map((i) => (
-                      <TableRow
-                        key={i}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Skeleton />
-                        </TableCell>
-                      </TableRow>
+                      <LoadingTableRow key={i} numCells={6} />
                     ))
                   : players.map((player) => (
-                      <TableRow
+                      <PlayerTableRow
                         key={player.address}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {player.nickname}
-                          {player.address === account && (
-                            <Chip
-                              size="small"
-                              label="You"
-                              color="success"
-                              sx={{ ml: 1 }}
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Tooltip arrow title={player.address}>
-                            <span>{accountToShort(player.address)}</span>
-                          </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                          {player.playerLevel}
-                        </TableCell>
-                        <TableCell align="right">{player.reputation}</TableCell>
-                        <TableCell align="right">{player.trades}</TableCell>
-                      </TableRow>
+                        account={account}
+                        {...player}
+                      />
                     ))}
               </TableBody>
             </Table>

@@ -1,5 +1,5 @@
 import { toWei } from 'web3-utils';
-import { Card } from '../../redux/cardsSlice';
+import { Card, CardFromContract } from '../../redux/cardsSlice';
 import { tokContract } from '../provider';
 export type PackSize = 10 | 20 | 50;
 
@@ -26,8 +26,8 @@ export const getCardDetails = (id: string): Promise<Card> => {
   return tokContract.methods
     .stats(id)
     .call()
-    .then((result: Card) => {
-      const { ...object } = result;
+    .then((result: CardFromContract) => {
+      const { 0: a, 1: b, 2: c, 3: d, 4: e, 5: f, 6: g, ...object } = result;
       return object;
     });
 };

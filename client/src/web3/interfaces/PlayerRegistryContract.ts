@@ -1,3 +1,8 @@
+import { EventData } from 'web3-eth-contract';
+import {
+  PlayerStructFromContract,
+  PlayerStructWithAddress,
+} from '../../redux/playersSlice';
 import { regContract } from '../provider';
 
 export const register = (nickname: string, from: string) => {
@@ -15,18 +20,30 @@ export const lookupUsername = (
   return regContract.methods.lookupUsername(username).call({ from });
 };
 
-export const getPlayerInfo = (account: string): Promise<any> => {
+export const getPlayerName = (account: string) => {
+  return regContract
+    .getPastEvents('UserRegister', {
+      filter: { who: account },
+      fromBlock: 0,
+      toBlock: 'latest',
+    })
+    .then((events) => events[0].returnValues.username);
+};
+
+export const getPlayerInfo = (
+  account: string
+): Promise<PlayerStructWithAddress> => {
   return regContract.methods
     .playerInfo(account)
     .call()
-    .then((result: any) => {
-      const { ...object } = result;
-      object.address = account;
-      return object;
+    .then((result: PlayerStructFromContract) => {
+      const { 0: a, 1: b, 2: c, ...object } = result;
+      const player: PlayerStructWithAddress = { address: account, ...object };
+      return player;
     });
 };
 
-export const getAllPlayerAddresses = (): Promise<any> => {
+export const getAllPlayerAddresses = (): Promise<EventData[]> => {
   return regContract.getPastEvents('UserRegister', {
     fromBlock: 0,
     toBlock: 'latest',
@@ -35,18 +52,17 @@ export const getAllPlayerAddresses = (): Promise<any> => {
 
 export const getAllPlayerInfo = (): Promise<any> => {
   return getAllPlayerAddresses().then((events) => {
-    console.log(events);
-    const players = events.map((event: any) => ({
-      address: event.returnValues.who,
-      nickname: event.returnValues.username,
-    }));
-    console.log(players);
-    const playerInfoPromises = players.map(
-      (player: { address: string; nickname: string }) =>
-        getPlayerInfo(player.address).then((result: any) => ({
-          ...result,
-          nickname: player.nickname,
-        }))
+    const players = events.map(
+      (event: EventData): { address: string; nickname: string } => ({
+        address: event.returnValues.who,
+        nickname: event.returnValues.username,
+      })
+    );
+    const playerInfoPromises = players.map((player) =>
+      getPlayerInfo(player.address).then((result) => ({
+        ...result,
+        nickname: player.nickname,
+      }))
     );
     return Promise.all(playerInfoPromises);
   });
