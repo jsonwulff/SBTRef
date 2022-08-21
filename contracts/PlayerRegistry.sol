@@ -52,20 +52,20 @@ contract TCGReg is Ownable {
         _;
     }
 
-    // Looks up an address by a given username
-    // NOTE: Returns the null address if none is found. Handle in caller
-    function lookupUsername(string calldata username) public view returns (address) {
-        return _usernames[uint256(keccak256(abi.encode(username)))];
-    }
-
     // Registers a user with a username and playerinfo
     // Reverts if username /or/ address already exists
     // emits the UserRegister event on success
     function register(string calldata username) public {
         address who = msg.sender;
-        // Check if user allready exists
-        require(getIsRegistered(who) == false, "Player address is already registered");
-        require(lookupUsername(username) == address(0), "Username is already registered");
+        // Check if user already exists
+        require(
+            getIsRegistered(who) == false,
+            "Player address is already registered");
+        require(
+            lookupUsername(username) == address(0), 
+            "Username is already registered");
+
+        // Hash used for internal identification
         uint256 uhash = uint256(keccak256(abi.encode(username)));
         // Set default stats
         _usernames[uhash] = who;
@@ -77,7 +77,8 @@ contract TCGReg is Ownable {
     // Register a succesful trade for two players
     // Require a valid unseen tradeID
     // NOTE: Currently has no way to verify the tradeId actually exists in token
-    function incrementTrades(address from, address to) public isRegistered(from) isRegistered(to) {
+    function incrementTrades(address from, address to) 
+             public isRegistered(from) isRegistered(to) {
         // Bookkeeping mostly
         playerInfo[from].trades++;
         playerInfo[to].trades++;
@@ -87,25 +88,41 @@ contract TCGReg is Ownable {
     //!  __ _(_)_____ __ _____
     //!  \ V / / -_) V  V (_-<
     //!   \_/|_\___|\_/\_//__/
+    // Looks up an address by a given username
+    // NOTE: Returns the null address if none is found. Handle in caller
+    function lookupUsername(string calldata username) 
+             public view returns (address) {
+        return _usernames[uint256(keccak256(abi.encode(username)))];
+    }
+
+    // Checks if an address is already registered
     function getIsRegistered(address who) public view returns (bool) {
         return playerInfo[who].playerLevel != 0;
     }
 
-    function getPlayerInfo(address who) public isRegistered(who) view returns (PlayerInfo memory){
+    // Returns all player info
+    // Note: in future, would be deprecated 
+    //       instead: split into view functions like below
+    function getPlayerInfo(address who) 
+             public isRegistered(who) view returns (PlayerInfo memory){
         return playerInfo[who];
     }
 
     // polymorphic lookup functions for usernames and address
-    function getPlayerLevel(string calldata username) public view isUsernameRegistered(username) returns (uint256) {
+    function getPlayerLevel(string calldata username) 
+             public view isUsernameRegistered(username) returns (uint256) {
         return getPlayerLevel(lookupUsername(username));
     }
-    function getPlayerLevel(address who) public view isRegistered(who) returns (uint256){
+    function getPlayerLevel(address who) 
+             public view isRegistered(who) returns (uint256){
         return playerInfo[who].playerLevel;
     }
-    function getPlayerTrades(string calldata username) public view isUsernameRegistered(username) returns (uint256) {
+    function getPlayerTrades(string calldata username) 
+             public view isUsernameRegistered(username) returns (uint256) {
         return getPlayerTrades(lookupUsername(username));
     }
-    function getPlayerTrades(address who) public view isRegistered(who) returns (uint256){
+    function getPlayerTrades(address who) 
+             public view isRegistered(who) returns (uint256){
         return playerInfo[who].trades;
     }
 
