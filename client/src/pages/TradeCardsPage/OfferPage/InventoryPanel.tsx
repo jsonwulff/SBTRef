@@ -15,14 +15,17 @@ export const InventoryPanel = (props: InventoryPanelProps) => {
 
   const cardsToDisplay = useMemo(() => {
     return cards.map((card) => (
-      <Grid item sm={2}>
-        <MiniCard key={card.id} card={card} size={50} owner={owner} />
+      <Grid item sm={3}>
+        <MiniCard key={card.id} card={card} size={100} owner={owner} />
       </Grid>
     ));
   }, [cards, owner]);
 
   return (
-    <Box hidden={value !== index} sx={{ p: 1 }}>
+    <Box
+      hidden={value !== index}
+      sx={{ p: 1, height: '660px', overflow: 'auto' }}
+    >
       {value === index && (
         <Grid container spacing={1}>
           {cardsToDisplay}

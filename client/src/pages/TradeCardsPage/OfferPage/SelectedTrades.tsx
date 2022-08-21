@@ -24,6 +24,7 @@ export const SelectedTrades = () => {
   const offerCards = myCards.filter((card) => offer.includes(card.id));
   const emptyOffers = 8 - offerCards.length;
   const wantCards = tradersCards.filter((card) => wants.includes(card.id));
+  const emptyWants = 8 - wantCards.length;
 
   return (
     <Box component={Paper} sx={{ width: '100%', px: 2, py: 1.5 }}>
@@ -65,7 +66,7 @@ export const SelectedTrades = () => {
           {nickname}'s cards:
         </Typography>
         <Typography variant="body2">
-          These are the cards you will loss in the trade
+          These are the cards you will receive in the trade, if accepted
         </Typography>
         <Grid container spacing={1} sx={{ mt: 1 }}>
           {wantCards.map((card) => (
@@ -73,7 +74,7 @@ export const SelectedTrades = () => {
               <MiniCard key={card.id} card={card} size={100} owner="theirs" />
             </Grid>
           ))}
-          {Array.from(Array(8).keys()).map((i) => (
+          {Array.from(Array(emptyWants).keys()).map((i) => (
             <Grid item sm={3} key={i}>
               <Box
                 sx={(theme) => ({
