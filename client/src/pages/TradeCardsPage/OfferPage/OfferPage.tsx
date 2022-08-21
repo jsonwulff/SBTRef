@@ -12,6 +12,7 @@ import {
 import { getCardsWithStatsByOwner } from '../../../web3/interfaces/TokenContract';
 import { Inventory } from './Inventory';
 import { OfferHeader } from './OfferHeader';
+import { SelectedTrades } from './SelectedTrades';
 
 export const OfferPage = () => {
   const { account, trader } = useAppSelector((state) => ({
@@ -61,6 +62,9 @@ export const OfferPage = () => {
         </Grid>
         <Grid item sm={6} md={6}>
           <Inventory />
+        </Grid>
+        <Grid item sm={6} md={6}>
+          <SelectedTrades />
         </Grid>
       </Grid>
     </Container>

@@ -7,17 +7,19 @@ interface InventoryPanelProps {
   cards: Card[];
   index: number;
   value: number;
+  owner: 'yours' | 'theirs';
 }
 
 export const InventoryPanel = (props: InventoryPanelProps) => {
-  const { value, index, cards } = props;
-  console.log(cards);
+  const { value, index, cards, owner } = props;
 
   const cardsToDisplay = useMemo(() => {
     return cards.map((card) => (
-      <MiniCard key={card.id} card={card} size={50} sm={2} />
+      <Grid item sm={2}>
+        <MiniCard key={card.id} card={card} size={50} owner={owner} />
+      </Grid>
     ));
-  }, [cards]);
+  }, [cards, owner]);
 
   return (
     <Box hidden={value !== index} sx={{ p: 1 }}>

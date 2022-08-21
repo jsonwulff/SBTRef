@@ -1,5 +1,4 @@
 import { Box, Popover } from '@mui/material';
-import Grid, { GridProps } from '@mui/material/Grid';
 import avatar from 'animal-avatar-generator';
 import { useMemo, useState } from 'react';
 import {
@@ -8,15 +7,20 @@ import {
   namesMap,
 } from '../../../constants/cardMappings';
 import { Card } from '../../../redux/cardsSlice';
+import { useAppDispatch } from '../../../redux/store';
+import { setOffer, setWants } from '../../../redux/tradeSlice';
 import { CardDisplay } from '../../MyCardsPage/CardDisplay';
 
-interface MiniCardProps extends GridProps {
+interface MiniCardProps {
   card: Card;
   size: number;
+  owner: 'yours' | 'theirs';
 }
 
-export const MiniCard = ({ card, size, ...other }: MiniCardProps) => {
+export const MiniCard = ({ card, size, owner, ...other }: MiniCardProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const dispatch = useAppDispatch();
+
   const image = useMemo(
     () =>
       avatar(namesMap[card.cardType], {
@@ -41,18 +45,30 @@ export const MiniCard = ({ card, size, ...other }: MiniCardProps) => {
     setAnchorEl(null);
   };
 
+  const handleOnClick = () => {
+    if (owner === 'yours') {
+      dispatch(setOffer(card.id));
+    } else {
+      dispatch(setWants(card.id));
+    }
+  };
+
   const open = Boolean(anchorEl);
   return (
-    <Grid item {...other}>
+    <Box>
       <Box
         dangerouslySetInnerHTML={{ __html: image }}
         sx={{
-          textAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           background: avatarBgColors[card.rarity],
           borderRadius: '5px',
+          cursor: 'pointer',
         }}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
+        onClick={handleOnClick}
       />
       <Popover
         id="mouse-over-popover"
@@ -74,6 +90,6 @@ export const MiniCard = ({ card, size, ...other }: MiniCardProps) => {
       >
         {cardDisplay}
       </Popover>
-    </Grid>
+    </Box>
   );
 };
