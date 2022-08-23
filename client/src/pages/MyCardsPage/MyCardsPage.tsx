@@ -1,4 +1,5 @@
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import SortRoundedIcon from '@mui/icons-material/SortRounded';
 import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
 import {
   Box,
@@ -15,6 +16,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { SelectDropDown } from '../../components/SelectDropDown';
+import { RarityAndAll } from '../../constants/cardMappings';
 import { cardSortBy } from '../../constants/componentMappings';
 import { Card, setMyCards } from '../../redux/cardsSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -23,6 +25,14 @@ import { getCardsWithStatsByOwner } from '../../web3/interfaces/TokenContract';
 import { CardDisplay } from './CardDisplay';
 import { ListDisplay } from './ListDisplay';
 import { Tab } from './Tab';
+
+interface TabCount {
+  '0': number;
+  '1': number;
+  '2': number;
+  '3': number;
+}
+const tabCount: TabCount = { '0': 0, '1': 0, '2': 0, '3': 0 };
 
 export const MyCardsPage = () => {
   const { account, myCards } = useAppSelector((state) => ({
@@ -34,6 +44,21 @@ export const MyCardsPage = () => {
   const [sortBy, setSortBy] = useState<keyof Card>(cardSortBy[3].value);
   const [order, setOrder] = useState<Order>('desc');
   const [filterRarity, setFilterRarity] = useState(0);
+  const [numCards, setNumCards] = useState(tabCount);
+
+  useEffect(() => {
+    setNumCards(
+      myCards.reduce(
+        (total: TabCount, currentValue) => ({
+          ...total,
+          0: total[0] + 1,
+          [currentValue.rarity]:
+            Number(total[currentValue.rarity as RarityAndAll]) + 1,
+        }),
+        tabCount
+      )
+    );
+  }, [myCards]);
 
   useEffect(() => {
     getCardsWithStatsByOwner(account).then((result) => {
@@ -56,7 +81,6 @@ export const MyCardsPage = () => {
     event: React.MouseEvent<unknown>,
     sortByProp: keyof Card
   ) => {
-    console.log('clicked');
     const isAsc = sortBy === sortByProp && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setSortBy(sortByProp);
@@ -64,6 +88,10 @@ export const MyCardsPage = () => {
 
   const handleToggleView = () => {
     setListView((prevState) => !prevState);
+  };
+
+  const handleToggleOrder = () => {
+    setOrder((prevState) => (prevState === 'desc' ? 'asc' : 'desc'));
   };
 
   return (
@@ -84,10 +112,10 @@ export const MyCardsPage = () => {
           })}
         >
           <Tabs value={filterRarity} onChange={handleOnFilterRarity}>
-            <Tab rarity={0} numCards={32} />
-            <Tab rarity={3} numCards={32} />
-            <Tab rarity={2} numCards={32} />
-            <Tab rarity={1} numCards={32} />
+            <Tab rarity={0} numCards={numCards[0]} value={0} />
+            <Tab rarity={3} numCards={numCards[3]} value={3} />
+            <Tab rarity={2} numCards={numCards[2]} value={2} />
+            <Tab rarity={1} numCards={numCards[1]} value={1} />
           </Tabs>
           <Box>
             <SelectDropDown
@@ -95,8 +123,25 @@ export const MyCardsPage = () => {
               value={sortBy}
               selectItems={cardSortBy}
               onChange={handleChange}
+              FormControlProps={{ sx: { width: '130px' } }}
             />
-            <IconButton onClick={handleToggleView}>
+            <IconButton onClick={handleToggleOrder} sx={{ ml: 1 }}>
+              <Tooltip
+                arrow
+                title={
+                  order === 'desc'
+                    ? 'Sort in ascending order'
+                    : 'Sort in descending order'
+                }
+              >
+                {order === 'desc' ? (
+                  <SortRoundedIcon />
+                ) : (
+                  <SortRoundedIcon sx={{ transform: 'scaleY(-1)' }} />
+                )}
+              </Tooltip>
+            </IconButton>
+            <IconButton onClick={handleToggleView} sx={{ ml: 1 }}>
               <Tooltip
                 arrow
                 title={isListView ? 'Show in card view' : 'Show in list view'}
@@ -109,7 +154,12 @@ export const MyCardsPage = () => {
         <Divider />
         {isListView ? (
           <ListDisplay
-            cards={[...myCards].sort(dynamicSort(sortBy, order))}
+            cards={[...myCards]
+              .filter(
+                (card) =>
+                  Number(card.rarity) === filterRarity || filterRarity === 0
+              )
+              .sort(dynamicSort(sortBy, order))}
             sortBy={sortBy}
             order={order}
             onRequestSort={handleSortRequest}
@@ -117,11 +167,17 @@ export const MyCardsPage = () => {
         ) : (
           <CardContent>
             <Grid container spacing={2} sx={{ mt: 2 }}>
-              {[...myCards].sort(dynamicSort(sortBy, 'desc')).map((card) => (
-                <Grid key={card.id} item xs={12} sm={6} md={4} lg={3}>
-                  <CardDisplay card={card} />
-                </Grid>
-              ))}
+              {[...myCards]
+                .filter(
+                  (card) =>
+                    Number(card.rarity) === filterRarity || filterRarity === 0
+                )
+                .sort(dynamicSort(sortBy, order))
+                .map((card) => (
+                  <Grid key={card.id} item xs={12} sm={6} md={4} lg={3}>
+                    <CardDisplay card={card} />
+                  </Grid>
+                ))}
             </Grid>
           </CardContent>
         )}

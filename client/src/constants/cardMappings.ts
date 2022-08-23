@@ -32,6 +32,9 @@ export const avatarBgColors: { [index: string]: string } = {
   '3': 'radial-gradient(circle, rgba(251,63,244,1) 35%, rgba(72,0,255,1) 100%);',
 };
 
+export type Rarity = '1' | '2' | '3';
+export type RarityAndAll = Rarity | '0';
+
 export const rarityToString: { [index: string]: string } = {
   '1': 'Common',
   '2': 'Uncommon',

@@ -1,12 +1,13 @@
 import { alpha, Box, Tab as MuiTab } from '@mui/material';
+import { TabProps as MuiTabProps } from '@mui/material/Tab';
 import { rarityToColor, rarityToString } from '../../constants/cardMappings';
 
-interface TabProps {
+interface TabProps extends MuiTabProps {
   rarity: 0 | 1 | 2 | 3;
   numCards: number;
 }
 
-export const Tab = ({ rarity, numCards }: TabProps) => {
+export const Tab = ({ rarity, numCards, ...others }: TabProps) => {
   return (
     <MuiTab
       sx={{
@@ -36,6 +37,7 @@ export const Tab = ({ rarity, numCards }: TabProps) => {
           {rarity === 0 ? 'All' : rarityToString[rarity]}
         </>
       }
+      {...others}
     />
   );
 };
