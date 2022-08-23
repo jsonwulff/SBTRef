@@ -1,3 +1,4 @@
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import {
   FormControl,
   InputLabel,
@@ -38,7 +39,13 @@ export const SelectDropDown = (props: SelectDropDownProps) => {
   return (
     <FormControl size="small" {...FormControlProps}>
       <InputLabel {...InputLabelProps}>{label}</InputLabel>
-      <Select value={value as string} label={label} onChange={onChange}>
+      <Select
+        value={value as string}
+        label={label}
+        onChange={onChange}
+        IconComponent={KeyboardArrowDownRoundedIcon}
+        sx={{ backgroundColor: '#fff' }}
+      >
         {selectItems.map((item) => (
           <MenuItem key={item.value} value={item.value} {...MenuItemProps}>
             {item.text}

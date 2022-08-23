@@ -14,10 +14,16 @@ import { CardDisplay } from '../../MyCardsPage/CardDisplay';
 interface MiniCardProps {
   card: Card;
   size: number;
-  owner: 'yours' | 'theirs';
+  owner?: 'yours' | 'theirs';
+  shownInOffer?: boolean;
 }
 
-export const MiniCard = ({ card, size, owner, ...other }: MiniCardProps) => {
+export const MiniCard = ({
+  card,
+  size,
+  owner,
+  shownInOffer = false,
+}: MiniCardProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const dispatch = useAppDispatch();
 
@@ -48,14 +54,18 @@ export const MiniCard = ({ card, size, owner, ...other }: MiniCardProps) => {
   const handleOnClick = () => {
     if (owner === 'yours') {
       dispatch(setOffer(card.id));
-    } else {
+    } else if (owner === 'theirs') {
       dispatch(setWants(card.id));
     }
   };
 
   const open = Boolean(anchorEl);
   return (
-    <Box>
+    <Box
+      sx={{
+        ...(shownInOffer && { width: size, display: 'inline-block', mr: 0.5 }),
+      }}
+    >
       <Box
         dangerouslySetInnerHTML={{ __html: image }}
         sx={{
@@ -68,7 +78,7 @@ export const MiniCard = ({ card, size, owner, ...other }: MiniCardProps) => {
         }}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
-        onClick={handleOnClick}
+        onClick={shownInOffer ? handleOnClick : undefined}
       />
       <Popover
         id="mouse-over-popover"

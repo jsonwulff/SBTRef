@@ -1,30 +1,37 @@
 import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
-import {
-  alpha,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { alpha, Box, Divider, Grid, Paper, Typography } from '@mui/material';
+import { useState } from 'react';
+import { PlayerInfo } from '../../../redux/playersSlice';
 import { useAppSelector } from '../../../redux/store';
+import { makeTradeOffer } from '../../../web3/interfaces/TokenContract';
 import { MiniCard } from './MiniCard';
 export const SelectedTrades = () => {
-  const { nickname, offer, wants, myCards, tradersCards } = useAppSelector(
-    (state) => ({
-      nickname: state.trade.trader?.nickname,
+  const { account, trader, offer, wants, myCards, tradersCards } =
+    useAppSelector((state) => ({
+      account: state.app.account,
+      trader: state.trade.trader as PlayerInfo,
       offer: state.trade.offer,
       wants: state.trade.wants,
       myCards: state.cards.myCards,
       tradersCards: state.trade.traderCards,
-    })
-  );
+    }));
+  const [loading, setLoading] = useState(false);
 
   const offerCards = myCards.filter((card) => offer.includes(card.id));
   const emptyOffers = 8 - offerCards.length;
   const wantCards = tradersCards.filter((card) => wants.includes(card.id));
   const emptyWants = 8 - wantCards.length;
+
+  const handleOnMakeOffer = () => {
+    makeTradeOffer(trader.address, account, offer, wants)
+      .once('receipt', (receipt: any) => {
+        console.log(receipt);
+      })
+      .once('error', (error: any) => {
+        console.log(error);
+      });
+  };
 
   return (
     <Box component={Paper} sx={{ width: '100%', px: 2, py: 1.5 }}>
@@ -63,7 +70,7 @@ export const SelectedTrades = () => {
       </Divider>
       <Box sx={{ pb: 3 }}>
         <Typography variant="button" color="primary.main">
-          {nickname}'s cards:
+          {trader?.nickname}'s cards:
         </Typography>
         <Typography variant="body2">
           These are the cards you will receive in the trade, if accepted
@@ -89,14 +96,20 @@ export const SelectedTrades = () => {
           ))}
         </Grid>
         <Typography variant="body2" sx={{ pt: 1.5 }}>
-          {nickname} will be notified of your trade offer
+          {trader?.nickname} will be notified of your trade offer
         </Typography>
       </Box>
       <Divider />
       <Box sx={{ pt: 3, pb: 2, textAlign: 'center' }}>
-        <Button size="large" color="success" variant="contained">
+        <LoadingButton
+          loading={loading}
+          size="large"
+          color="success"
+          variant="contained"
+          onClick={handleOnMakeOffer}
+        >
           Make offer
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

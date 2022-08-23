@@ -2,11 +2,11 @@ export const accountToShort = (address: string): string => {
   return address.substring(0, 4) + '...' + address.slice(-4);
 };
 type KeyOf<T extends object> = Extract<keyof T, string>;
-type order = 'asc' | 'desc';
+export type Order = 'asc' | 'desc';
 
 export function dynamicSort<T extends {}>(
   property: KeyOf<T>,
-  order: order = 'asc'
+  order: Order = 'asc'
 ) {
   var sortOrder = 1;
   if (order === 'desc') {

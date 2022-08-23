@@ -43,10 +43,10 @@ contract TCGTok is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     //! | _|\ V / -_) ' \  _(_-<
     //! |___|\_/\___|_||_\__/__/
                         
-    event TradeOffered(uint tradeId, address sender, address reciever);
-    event TradeAccept(uint tradeId, address sender, address reciever);
-    event TradeDecline(uint tradeId, address sender, address reciever);
-    event TradeClose(uint tradeId, address sender, address reciever);
+    event TradeOffered(uint indexed tradeId, address indexed sender, address indexed reciever);
+    event TradeAccept(uint indexed tradeId, address indexed sender, address indexed reciever);
+    event TradeDecline(uint indexed tradeId, address indexed sender, address indexed reciever);
+    event TradeClose(uint indexed tradeId, address indexed sender, address indexed reciever);
 
 
     //!  ___ _        _       

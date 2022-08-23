@@ -3,11 +3,49 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Card } from './cardsSlice';
 import { PlayerInfo } from './playersSlice';
 
+export interface TradeOffer {
+  tradeId: string;
+  sender: string;
+  reciever: string;
+}
+
+export interface TradeOfferedEvent extends TradeOffer {
+  0: string;
+  1: string;
+  2: string;
+}
+
+export interface TradeStruct {
+  id: string;
+  offerer: string;
+  reciever: string;
+  offers: string[];
+  wants: string[];
+  closed: boolean;
+}
+export interface Trade extends TradeStruct {}
+
+export interface TradeFromContract extends TradeStruct {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+}
+
+export interface TradeWithCardDetails extends Omit<Trade, 'offers' | 'wants'> {
+  offers: Card[];
+  wants: Card[];
+}
+
 export interface TradeState {
   trader: PlayerInfo | null;
   traderCards: Card[];
   offer: string[];
   wants: string[];
+  trades: TradeWithCardDetails[];
 }
 
 const initialState: TradeState = {
@@ -15,6 +53,7 @@ const initialState: TradeState = {
   traderCards: [],
   offer: [],
   wants: [],
+  trades: [],
 };
 
 export const tradeSlice = createSlice({
@@ -43,10 +82,13 @@ export const tradeSlice = createSlice({
         state.wants.push(action.payload);
       }
     },
+    setTrades: (state, action: PayloadAction<TradeWithCardDetails[]>) => {
+      state.trades = action.payload;
+    },
   },
 });
 
-export const { setTrader, setOffer, setWants, setTraderCards } =
+export const { setTrader, setOffer, setWants, setTraderCards, setTrades } =
   tradeSlice.actions;
 
 export default tradeSlice.reducer;

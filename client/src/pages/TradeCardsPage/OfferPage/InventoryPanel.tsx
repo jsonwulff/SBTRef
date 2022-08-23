@@ -15,8 +15,8 @@ export const InventoryPanel = (props: InventoryPanelProps) => {
 
   const cardsToDisplay = useMemo(() => {
     return cards.map((card) => (
-      <Grid item sm={3}>
-        <MiniCard key={card.id} card={card} size={100} owner={owner} />
+      <Grid key={card.id} item sm={3}>
+        <MiniCard card={card} size={100} owner={owner} />
       </Grid>
     ));
   }, [cards, owner]);
