@@ -8,7 +8,15 @@ interface PlayerTableRowProps extends PlayerInfo {
 }
 
 export const PlayerTableRow = (props: PlayerTableRowProps) => {
-  const { account, nickname, address, playerLevel, reputation, trades } = props;
+  const {
+    account,
+    nickname,
+    address,
+    playerLevel,
+    reputation,
+    trades,
+    numCards,
+  } = props;
   const navigate = useNavigate();
   const handleOnClick = () => {
     navigate(`${address}`);
@@ -31,11 +39,17 @@ export const PlayerTableRow = (props: PlayerTableRowProps) => {
           <span>{accountToShort(address)}</span>
         </Tooltip>
       </TableCell>
+      <TableCell align="right">{numCards}</TableCell>
       <TableCell align="right">{playerLevel}</TableCell>
       <TableCell align="right">{reputation}</TableCell>
       <TableCell align="right">{trades}</TableCell>
       <TableCell align="right">
-        <Button size="small" variant="outlined" onClick={handleOnClick}>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={handleOnClick}
+          disabled={account === address}
+        >
           Trade
         </Button>
       </TableCell>

@@ -2,8 +2,10 @@ import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
 import { LoadingButton } from '@mui/lab';
 import { alpha, Box, Divider, Grid, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
+import { setError, setSuccess } from '../../../redux/appSlice';
 import { PlayerInfo } from '../../../redux/playersSlice';
-import { useAppSelector } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import { clearTrade } from '../../../redux/tradeSlice';
 import { makeTradeOffer } from '../../../web3/interfaces/TokenContract';
 import { MiniCard } from './MiniCard';
 export const SelectedTrades = () => {
@@ -17,6 +19,8 @@ export const SelectedTrades = () => {
       tradersCards: state.trade.traderCards,
     }));
   const [loading, setLoading] = useState(false);
+  const [buttonText, setButtonText] = useState('Make offer');
+  const dispatch = useAppDispatch();
 
   const offerCards = myCards.filter((card) => offer.includes(card.id));
   const emptyOffers = 8 - offerCards.length;
@@ -24,12 +28,25 @@ export const SelectedTrades = () => {
   const emptyWants = 8 - wantCards.length;
 
   const handleOnMakeOffer = () => {
+    setLoading(true);
+    setButtonText('Making offer...');
     makeTradeOffer(trader.address, account, offer, wants)
       .once('receipt', (receipt: any) => {
-        console.log(receipt);
+        setLoading(false);
+        dispatch(clearTrade());
+        setButtonText('Make offer');
+        dispatch(
+          setSuccess(
+            'Successfully made offer. Waiting for receiver to respond to offer. Go to "Dashboard" to see the status of your offer, or withdraw it.'
+          )
+        );
       })
       .once('error', (error: any) => {
-        console.log(error);
+        setLoading(false);
+        dispatch(clearTrade());
+        setButtonText('Make offer');
+        dispatch(setError('Failed to make offer, try again later.'));
+        console.log('Failed to make offer', error);
       });
   };
 
@@ -44,8 +61,8 @@ export const SelectedTrades = () => {
         </Typography>
         <Grid container spacing={1} sx={{ mt: 1 }}>
           {offerCards.map((card) => (
-            <Grid item sm={3}>
-              <MiniCard key={card.id} card={card} size={100} owner="yours" />
+            <Grid key={card.id} item sm={3}>
+              <MiniCard card={card} size={100} owner="yours" />
             </Grid>
           ))}
           {Array.from(Array(emptyOffers).keys()).map((i) => (
@@ -77,7 +94,7 @@ export const SelectedTrades = () => {
         </Typography>
         <Grid container spacing={1} sx={{ mt: 1 }}>
           {wantCards.map((card) => (
-            <Grid item sm={3}>
+            <Grid key={card.id} item sm={3}>
               <MiniCard key={card.id} card={card} size={100} owner="theirs" />
             </Grid>
           ))}

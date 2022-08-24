@@ -23,6 +23,7 @@ export interface PlayerInfo {
   trades: string;
   playerLevel: string;
   reputation: string;
+  numCards: string;
 }
 
 export interface PlayerState {

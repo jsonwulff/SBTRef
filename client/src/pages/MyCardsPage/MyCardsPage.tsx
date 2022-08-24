@@ -11,10 +11,15 @@ import {
   Grid,
   IconButton,
   SelectChangeEvent,
+  Table,
+  TableBody,
   Tabs,
   Tooltip,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EmptyRow } from '../../components/EmptyRow';
+import { Loading } from '../../components/Loading';
 import { SelectDropDown } from '../../components/SelectDropDown';
 import { RarityAndAll } from '../../constants/cardMappings';
 import { cardSortBy } from '../../constants/componentMappings';
@@ -45,6 +50,20 @@ export const MyCardsPage = () => {
   const [order, setOrder] = useState<Order>('desc');
   const [filterRarity, setFilterRarity] = useState(0);
   const [numCards, setNumCards] = useState(tabCount);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setLoading(true);
+    getCardsWithStatsByOwner(account)
+      .then((result) => {
+        dispatch(setMyCards(result));
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+  }, [account, dispatch]);
 
   useEffect(() => {
     setNumCards(
@@ -59,12 +78,6 @@ export const MyCardsPage = () => {
       )
     );
   }, [myCards]);
-
-  useEffect(() => {
-    getCardsWithStatsByOwner(account).then((result) => {
-      dispatch(setMyCards(result));
-    });
-  }, [account, dispatch]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSortBy(event.target.value as keyof Card);
@@ -93,6 +106,10 @@ export const MyCardsPage = () => {
   const handleToggleOrder = () => {
     setOrder((prevState) => (prevState === 'desc' ? 'asc' : 'desc'));
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Container sx={{ pb: 4 }}>
@@ -152,7 +169,20 @@ export const MyCardsPage = () => {
           </Box>
         </CardContent>
         <Divider />
-        {isListView ? (
+        {myCards.length === 0 ? (
+          <MuiCard>
+            <Table>
+              <TableBody>
+                <EmptyRow
+                  title="You do not have any card yet."
+                  subTitle="Go to the card store to buy some cards to get started"
+                  buttonText="Start trading cards now"
+                  buttonOnClick={() => navigate('/app/card-store')}
+                />
+              </TableBody>
+            </Table>
+          </MuiCard>
+        ) : isListView ? (
           <ListDisplay
             cards={[...myCards]
               .filter(

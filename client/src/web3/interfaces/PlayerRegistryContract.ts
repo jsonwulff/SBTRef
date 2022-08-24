@@ -4,6 +4,7 @@ import {
   PlayerStructWithAddress,
 } from '../../redux/playersSlice';
 import { regContract } from '../provider';
+import { getCardsByOwner } from './TokenContract';
 
 export const register = (nickname: string, from: string) => {
   return regContract.methods.register(nickname).send({ from });
@@ -51,6 +52,15 @@ export const getAllPlayerAddresses = (): Promise<EventData[]> => {
 };
 
 export const getAllPlayerInfo = (): Promise<any> => {
+  // const adrNick = await getAllPlayerAddresses().then((events) => (
+  //   events.map(
+  //     (event: EventData): { address: string; nickname: string } => ({
+  //       address: event.returnValues.who,
+  //       nickname: event.returnValues.username,
+  //     })
+  //   )))
+  //   const playerPromises = adrNick.map((player) => getPlayerInfo(player.address));
+
   return getAllPlayerAddresses().then((events) => {
     const players = events.map(
       (event: EventData): { address: string; nickname: string } => ({
@@ -64,6 +74,15 @@ export const getAllPlayerInfo = (): Promise<any> => {
         nickname: player.nickname,
       }))
     );
-    return Promise.all(playerInfoPromises);
+    const withNumCards = Promise.all(playerInfoPromises).then((res) => {
+      const playersNumCards = res.map((player) =>
+        getCardsByOwner(player.address).then((cards) => ({
+          ...player,
+          numCards: cards.length,
+        }))
+      );
+      return Promise.all(playersNumCards);
+    });
+    return withNumCards;
   });
 };

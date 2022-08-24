@@ -1,6 +1,7 @@
-import { Box, CircularProgress, Container, Grid } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Loading } from '../../../components/Loading';
 import { setMyCards } from '../../../redux/cardsSlice';
 import { PlayerInfo } from '../../../redux/playersSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
@@ -40,18 +41,7 @@ export const OfferPage = () => {
   }, [address, account, dispatch]);
 
   if (!trader) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flex: '1 1',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (

@@ -54,3 +54,7 @@ This should automatically open a browser window and load the front end applicati
 - `test`: Folder for automated tests of contracts (either in Solidity or JavaScript).
 - `truffle-config.js`: A configuration file for your project's settings.
 - `client`: Folder for the front-end Aeact app.
+
+## Todo
+
+- [ ] Add player stats on front page (dashboard) showing totaler number of cards etc.

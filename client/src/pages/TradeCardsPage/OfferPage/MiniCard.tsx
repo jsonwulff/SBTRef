@@ -1,4 +1,5 @@
-import { Box, Popover } from '@mui/material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { alpha, Box, Popover } from '@mui/material';
 import avatar from 'animal-avatar-generator';
 import { useMemo, useState } from 'react';
 import {
@@ -7,7 +8,7 @@ import {
   namesMap,
 } from '../../../constants/cardMappings';
 import { Card } from '../../../redux/cardsSlice';
-import { useAppDispatch } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { setOffer, setWants } from '../../../redux/tradeSlice';
 import { CardDisplay } from '../../MyCardsPage/CardDisplay';
 
@@ -15,6 +16,7 @@ interface MiniCardProps {
   card: Card;
   size: number;
   owner?: 'yours' | 'theirs';
+  inInventory?: boolean;
   shownInOffer?: boolean;
 }
 
@@ -23,8 +25,10 @@ export const MiniCard = ({
   size,
   owner,
   shownInOffer = false,
+  inInventory = false,
 }: MiniCardProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const { offer, wants } = useAppSelector((state) => state.trade);
   const dispatch = useAppDispatch();
 
   const image = useMemo(
@@ -63,7 +67,9 @@ export const MiniCard = ({
   return (
     <Box
       sx={{
-        ...(shownInOffer && { width: size, display: 'inline-block', mr: 0.5 }),
+        ...(shownInOffer
+          ? { width: size, display: 'inline-block', mr: 0.5 }
+          : { position: 'relative' }),
       }}
     >
       <Box
@@ -78,8 +84,24 @@ export const MiniCard = ({
         }}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
-        onClick={shownInOffer ? handleOnClick : undefined}
+        onClick={!shownInOffer ? handleOnClick : undefined}
       />
+      {inInventory && (offer.includes(card.id) || wants.includes(card.id)) && (
+        <Box
+          sx={{
+            position: 'absolute',
+            pointerEvents: 'none',
+            top: 0,
+            bottom: 0,
+            height: '100%',
+            width: '100%',
+            backgroundColor: alpha('#000', 0.55),
+            borderRadius: '5px',
+          }}
+        >
+          <CloseRoundedIcon sx={{ color: '#fff' }} />
+        </Box>
+      )}
       <Popover
         id="mouse-over-popover"
         sx={{

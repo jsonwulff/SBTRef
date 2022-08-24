@@ -48,6 +48,7 @@ export const TradeCardsPage = () => {
                 <TableRow>
                   <TableCell>Nickname</TableCell>
                   <TableCell>Address</TableCell>
+                  <TableCell align="right"># Cards</TableCell>
                   <TableCell align="right">Level</TableCell>
                   <TableCell align="right">Reputation</TableCell>
                   <TableCell align="right">Trades</TableCell>

@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, Paper, Skeleton, Typography } from '@mui/material';
+import { Box, Grid, Paper, Skeleton, Typography } from '@mui/material';
 import { useState } from 'react';
 import { setError, setSuccess } from '../../redux/appSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -25,7 +25,11 @@ export const PackOffer = ({ numCards, price, name }: PackOfferType) => {
         setButtonText('Buy pack');
         dispatch(
           setSuccess(
-            `Successfully bought ${name} for ${price} ETH. Go to "My cards" to see them.`
+            `Successfully bought ${name} for ${
+              packCost
+                ? web3.utils.fromWei((price * packCost).toString(), 'ether')
+                : '?'
+            } ETH. Go to "My cards" to see them.`
           )
         );
       })
@@ -39,8 +43,24 @@ export const PackOffer = ({ numCards, price, name }: PackOfferType) => {
 
   return (
     <Grid item sm={4}>
-      <Paper sx={{ p: 1 }}>
-        <Skeleton animation={false} variant="rectangular" height={200} />
+      <Paper sx={{ p: 1, textAlign: 'center' }}>
+        <Box sx={{ textAlign: 'center', py: 2 }}>
+          <img
+            alt="Under development"
+            src={
+              numCards === 10
+                ? '/small.svg'
+                : numCards === 20
+                ? '/medium.svg'
+                : '/large.svg'
+            }
+            style={{
+              display: 'inline-block',
+              maxWidth: '100%',
+              width: 250,
+            }}
+          />
+        </Box>
         <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, mt: 1 }}>
           {name}
         </Typography>

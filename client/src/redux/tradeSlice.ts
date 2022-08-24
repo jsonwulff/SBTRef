@@ -85,10 +85,20 @@ export const tradeSlice = createSlice({
     setTrades: (state, action: PayloadAction<TradeWithCardDetails[]>) => {
       state.trades = action.payload;
     },
+    clearTrade: (state) => {
+      state.offer = [];
+      state.wants = [];
+    },
   },
 });
 
-export const { setTrader, setOffer, setWants, setTraderCards, setTrades } =
-  tradeSlice.actions;
+export const {
+  setTrader,
+  setOffer,
+  setWants,
+  setTraderCards,
+  setTrades,
+  clearTrade,
+} = tradeSlice.actions;
 
 export default tradeSlice.reducer;
