@@ -32,7 +32,7 @@ export const TradeCardsPage = () => {
       dispatch(setPlayers(result));
       setLoading(false);
     });
-  }, [dispatch]);
+  }, [dispatch, account]);
 
   return (
     <Container sx={{ pb: 4 }}>
