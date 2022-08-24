@@ -1,5 +1,11 @@
 # SST-2022
 
+```
+make run-ganache
+truffle migrate
+npm run build
+```
+
 ## Prerequisites
 
 In order to build, deploy, test the smart contracts, and run the front-end, you need to have the following:

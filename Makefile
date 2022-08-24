@@ -1,2 +1,2 @@
 run-ganache:
-	ganache-cli
+	ganache-cli -q -d
