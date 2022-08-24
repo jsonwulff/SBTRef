@@ -1,9 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setAccount, setError, setIsRegistered } from '../../redux/appSlice';
+import {
+  setAccount,
+  setError,
+  setIsRegistered,
+  setPlayerInfo,
+  setPlayerName,
+} from '../../redux/appSlice';
 import { RootState } from '../../redux/store';
-import { isRegistered } from '../interfaces/PlayerRegistryContract';
+import {
+  getPlayerInfo,
+  getPlayerName,
+  isRegistered,
+} from '../interfaces/PlayerRegistryContract';
 
 export const useStartApp = () => {
   const account = useSelector((state: RootState) => state.app.account);
@@ -28,8 +38,16 @@ export const useStartApp = () => {
 
   useEffect(() => {
     if (account !== '0') {
-      isRegistered(account).then((result) => {
-        dispatch(setIsRegistered(result));
+      isRegistered(account).then((isReg) => {
+        const playerInfoPromise = getPlayerInfo(account);
+        const playerNamePromise = getPlayerName(account);
+        Promise.all([playerInfoPromise, playerNamePromise]).then(
+          ([playerInfo, playerName]) => {
+            dispatch(setIsRegistered(isReg));
+            dispatch(setPlayerInfo(playerInfo));
+            dispatch(setPlayerName(playerName));
+          }
+        );
       });
     }
   }, [account, dispatch]);

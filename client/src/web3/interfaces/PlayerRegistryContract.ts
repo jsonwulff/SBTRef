@@ -52,15 +52,6 @@ export const getAllPlayerAddresses = (): Promise<EventData[]> => {
 };
 
 export const getAllPlayerInfo = (): Promise<any> => {
-  // const adrNick = await getAllPlayerAddresses().then((events) => (
-  //   events.map(
-  //     (event: EventData): { address: string; nickname: string } => ({
-  //       address: event.returnValues.who,
-  //       nickname: event.returnValues.username,
-  //     })
-  //   )))
-  //   const playerPromises = adrNick.map((player) => getPlayerInfo(player.address));
-
   return getAllPlayerAddresses().then((events) => {
     const players = events.map(
       (event: EventData): { address: string; nickname: string } => ({

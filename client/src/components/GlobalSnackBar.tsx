@@ -21,7 +21,12 @@ export const GlobalSnackBar = () => {
   };
 
   return (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    >
       <Alert onClose={handleClose} severity={popUpMessage?.type}>
         {popUpMessage?.message}
       </Alert>

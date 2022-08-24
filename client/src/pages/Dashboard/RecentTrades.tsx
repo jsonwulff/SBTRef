@@ -4,6 +4,9 @@ import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import {
   Button,
+  Card as MuiCard,
+  CardHeader,
+  Divider,
   Paper,
   Table,
   TableBody,
@@ -56,114 +59,166 @@ export const RecentTrader = () => {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell colSpan={2}>Trade with</TableCell>
-            <TableCell>You will loss</TableCell>
-            <TableCell>You will get</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {trades.length === 0 ? (
-            <EmptyRow
-              title="You do not have any recent trades."
-              subTitle="Go to the trades page to start trading with other users, and if
+    <MuiCard>
+      <CardHeader
+        title="Recent trades"
+        titleTypographyProps={{ variant: 'h6', sx: { fontWeight: 700 } }}
+      />
+      <Divider />
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow
+              sx={(theme) => ({ backgroundColor: theme.palette.grey[100] })}
+            >
+              <TableCell
+                colSpan={2}
+                sx={{ fontWeight: 700, textTransform: 'uppercase' }}
+              >
+                Trade with
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, textTransform: 'uppercase' }}>
+                You will loss
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, textTransform: 'uppercase' }}>
+                You will get
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, textTransform: 'uppercase' }}>
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {trades.length === 0 ? (
+              <EmptyRow
+                title="You do not have any recent trades."
+                subTitle="Go to the trades page to start trading with other users, and if
                 your are lucky, improve your cards' stats in the trade."
-              buttonText="Start trading cards now"
-              buttonOnClick={() => navigate('/app/trade-cards')}
-            />
-          ) : (
-            trades.map((row) => {
-              const isSender = account === row.offerer;
-              return (
-                <TableRow
-                  key={row.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell sx={{ pr: 0 }}>
-                    {isSender ? (
-                      <Tooltip title="Trade offered by you">
-                        <SendRoundedIcon color="disabled" />
+                buttonText="Start trading cards now"
+                buttonOnClick={() => navigate('/app/trade-cards')}
+              />
+            ) : (
+              trades.map((row) => {
+                const isSender = account === row.offerer;
+                return (
+                  <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell sx={{ pr: 0 }}>
+                      {isSender ? (
+                        <Tooltip title="Trade offered by you">
+                          <SendRoundedIcon color="disabled" />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Trade received">
+                          <InboxRoundedIcon color="disabled" />
+                        </Tooltip>
+                      )}
+                    </TableCell>
+                    <TableCell sx={{ pl: 0 }}>
+                      <Tooltip title={row.offerer}>
+                        <span>
+                          {isSender
+                            ? accountToShort(row.reciever)
+                            : accountToShort(row.offerer)}
+                        </span>
                       </Tooltip>
-                    ) : (
-                      <Tooltip title="Trade received">
-                        <InboxRoundedIcon color="disabled" />
-                      </Tooltip>
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ pl: 0 }}>
-                    <Tooltip title={row.offerer}>
-                      <span>
-                        {isSender
-                          ? accountToShort(row.reciever)
-                          : accountToShort(row.offerer)}
-                      </span>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>
-                    {isSender
-                      ? row.offers.map((card) => (
-                          <MiniCard card={card} size={30} shownInOffer={true} />
-                        ))
-                      : row.wants.map((card) => (
-                          <MiniCard card={card} size={30} shownInOffer={true} />
-                        ))}
-                  </TableCell>
-                  <TableCell>
-                    {!isSender
-                      ? row.offers.map((card) => (
-                          <MiniCard card={card} size={30} shownInOffer={true} />
-                        ))
-                      : row.wants.map((card) => (
-                          <MiniCard card={card} size={30} shownInOffer={true} />
-                        ))}
-                  </TableCell>
-                  <TableCell>
-                    {row.closed ? (
-                      'Trade is closed'
-                    ) : isSender ? (
-                      <Button
-                        variant="contained"
-                        color="error"
-                        size="small"
-                        onClick={() => handleOnCloseTrade(row.id)}
-                        startIcon={<CloseRoundedIcon />}
-                      >
-                        Withdraw offer
-                      </Button>
-                    ) : (
-                      <>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          onClick={() => handleOnAcceptTrade(row.id)}
-                          startIcon={<CheckRoundedIcon />}
-                        >
-                          Accept
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          size="small"
-                          onClick={() => handleOnDeclineTrade(row.id)}
-                          startIcon={<CloseRoundedIcon />}
-                          sx={{ ml: 1 }}
-                        >
-                          Decline
-                        </Button>
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                    </TableCell>
+                    <TableCell>
+                      {isSender
+                        ? row.offers.map((card) => (
+                            <MiniCard
+                              key={card.id}
+                              card={card}
+                              size={30}
+                              shownInOffer={true}
+                            />
+                          ))
+                        : row.wants.map((card) => (
+                            <MiniCard
+                              key={card.id}
+                              card={card}
+                              size={30}
+                              shownInOffer={true}
+                            />
+                          ))}
+                    </TableCell>
+                    <TableCell>
+                      {!isSender
+                        ? row.offers.map((card) => (
+                            <MiniCard
+                              key={card.id}
+                              card={card}
+                              size={30}
+                              shownInOffer={true}
+                            />
+                          ))
+                        : row.wants.map((card) => (
+                            <MiniCard
+                              key={card.id}
+                              card={card}
+                              size={30}
+                              shownInOffer={true}
+                            />
+                          ))}
+                    </TableCell>
+                    <TableCell>
+                      {row.closed ? (
+                        'Trade is closed'
+                      ) : isSender ? (
+                        <Tooltip arrow title="Withdraw trade">
+                          <Button
+                            variant="contained"
+                            color="error"
+                            size="small"
+                            onClick={() => handleOnCloseTrade(row.id)}
+                            startIcon={<CloseRoundedIcon />}
+                            sx={{
+                              minWidth: 'unset',
+                              '& .MuiButton-startIcon': { m: 0 },
+                            }}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <>
+                          <Tooltip arrow title="Accept trade">
+                            <Button
+                              variant="contained"
+                              color="success"
+                              size="small"
+                              onClick={() => handleOnAcceptTrade(row.id)}
+                              startIcon={<CheckRoundedIcon />}
+                              sx={{
+                                minWidth: 'unset',
+                                '& .MuiButton-startIcon': { m: 0 },
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip arrow title="Decline trade">
+                            <Button
+                              variant="contained"
+                              color="error"
+                              size="small"
+                              onClick={() => handleOnDeclineTrade(row.id)}
+                              startIcon={<CloseRoundedIcon />}
+                              sx={{
+                                ml: 1,
+                                minWidth: 'unset',
+                                '& .MuiButton-startIcon': { m: 0 },
+                              }}
+                            />
+                          </Tooltip>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </MuiCard>
   );
 };

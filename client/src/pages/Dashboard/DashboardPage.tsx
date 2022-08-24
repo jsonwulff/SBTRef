@@ -7,6 +7,7 @@ import {
   getTradeDetails,
   getTradeOffers,
 } from '../../web3/interfaces/TokenContract';
+import { PlayerOverview } from './PlayerOverview';
 import { RecentTrader } from './RecentTrades';
 
 export const DashboardPage = () => {
@@ -39,7 +40,7 @@ export const DashboardPage = () => {
   }, [account, dispatch]);
 
   return (
-    <Container sx={{ pb: 4 }}>
+    <Container maxWidth="xl" sx={{ pb: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
         Dashboard
       </Typography>
@@ -47,6 +48,9 @@ export const DashboardPage = () => {
       <Grid container spacing={2} sx={{ mt: 2 }}>
         <Grid item sm={12} md={9}>
           <RecentTrader />
+        </Grid>
+        <Grid item sm={12} md={3}>
+          <PlayerOverview />
         </Grid>
       </Grid>
     </Container>

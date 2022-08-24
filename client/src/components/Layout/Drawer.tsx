@@ -1,4 +1,3 @@
-import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import StoreRoundedIcon from '@mui/icons-material/StoreRounded';
@@ -38,11 +37,11 @@ const menuItems = [
     icon: <SwapHorizRoundedIcon />,
     link: 'trade-cards',
   },
-  {
-    text: 'My profile',
-    icon: <AccountBoxRoundedIcon />,
-    link: 'my-profile',
-  },
+  // {
+  //   text: 'My profile',
+  //   icon: <AccountBoxRoundedIcon />,
+  //   link: 'my-profile',
+  // },
 ];
 
 export const Drawer = () => {
