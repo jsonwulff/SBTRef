@@ -1,4 +1,8 @@
-# SST-2022
+# Reference project - Subjects in Blockchain Technologies 2022
+This is copy of the project created as part of the course Subjects in Blockchain Technologies.
+
+##
+How to run the project
 
 ```
 make run-ganache
